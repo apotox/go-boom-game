@@ -52,7 +52,7 @@ func (p *Player) CurrentImage() *ebiten.Image {
 
 func (p *Player) Move(g *Game) {
 
-	_, up, left, down, right, _ := p.GetTiles(g)
+	_, up, left, down, right, _ := GetTiles(p.GetTilePos(), g)
 
 	if p.nextTile == nil {
 
@@ -102,35 +102,6 @@ func (p *Player) Move(g *Game) {
 func (p *Player) GetTilePos() Position {
 
 	return Position{X: (p.pos.X) / tileSize, Y: (p.pos.Y) / tileSize}
-}
-
-func (p *Player) GetTiles(g *Game) (center, up, left, down, right *Tile, err error) {
-	ptp := p.GetTilePos()
-
-	center = g.board.tiles[ptp.Y*g.board.widthSize+ptp.X]
-
-	if ptp.Y > 0 {
-		up = g.board.tiles[(ptp.Y-1)*g.board.widthSize+ptp.X]
-
-	}
-	if ptp.X > 0 {
-		left = g.board.tiles[ptp.Y*g.board.widthSize+ptp.X-1]
-	}
-	if ptp.Y < g.board.heightSize-1 {
-		down = g.board.tiles[(ptp.Y+1)*g.board.widthSize+ptp.X]
-	}
-	if ptp.X < g.board.widthSize-1 {
-		right = g.board.tiles[ptp.Y*g.board.widthSize+ptp.X+1]
-	}
-
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Printf("Panic: %+v\n", r)
-			err = fmt.Errorf("%+v", r)
-		}
-	}()
-
-	return
 }
 
 func (p *Player) Update(game *Game) error {
