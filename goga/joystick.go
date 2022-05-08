@@ -45,6 +45,14 @@ const (
 	mouseStateSettled
 )
 
+type Action int
+
+const (
+	dropBomb Action = iota
+	fireBomb
+	hidePlayer
+)
+
 type touchState int
 
 const (
@@ -226,9 +234,12 @@ func (i *Input) Dir() (Dir, bool) {
 	return 0, false
 }
 
-func (i *Input) Action() (int, bool) {
-	if inpututil.IsKeyJustPressed(ebiten.KeyS) {
-		return 1, true
+func (i *Input) Action() (Action, bool) {
+	if inpututil.IsKeyJustPressed(ebiten.KeyD) {
+		return dropBomb, true
+	}
+	if inpututil.IsKeyJustPressed(ebiten.KeyF) {
+		return fireBomb, true
 	}
 
 	return 0, false

@@ -140,18 +140,7 @@ func (p *Player) Update(game *Game) error {
 	}
 
 	if action, ok := game.input.Action(); ok {
-		p.tasks <- Task{
-			taskType: "action",
-			initData: map[string]interface{}{
-				"action": action,
-			},
-			action: func(g *Game, initData map[string]interface{}) error {
-				action := initData["action"].(int)
-				fmt.Printf("executed action: %d\n", action)
-				game.bombs = append(game.bombs, NewBomb(p.pos.X, p.pos.Y))
-				return nil
-			},
-		}
+		p.AddTask(action)
 	}
 
 	p.Move(game)
@@ -163,12 +152,27 @@ func (p *Player) Update(game *Game) error {
 	return nil
 }
 
+func (p *Player) AddTask(action Action) {
+	p.tasks <- Task{
+		taskType: "action",
+		initData: map[string]interface{}{
+			"action": action,
+		},
+		action: func(g *Game, initData map[string]interface{}) error {
+			action := initData["action"].(Action)
+			fmt.Printf("executed action: %d\n", action)
+			g.bombs = append(g.bombs, NewBomb(p.pos.X, p.pos.Y))
+			return nil
+		},
+	}
+}
+
 func (p *Player) RunTasks(game *Game) error {
 	select {
 	case task := <-p.tasks:
 		task.action(game, task.initData)
 	default:
-
+		// nothing to do
 	}
 
 	return nil
