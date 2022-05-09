@@ -26,11 +26,11 @@ type Bomb struct {
 func NewBomb(index, x, y, lifeTime int) *Bomb {
 
 	sprites := make(map[BombState]*Sprite)
-	sprites[BombStateIdle] = NewSprite(GetResource("tiles"), 1, 0, 32, &DefaultImageCords{
+	sprites[BombStateIdle] = NewSprite(GetResource(ResourceNameTiles), 1, 0, 32, &DefaultImageCords{
 		i: 1,
 		j: 9,
 	}, nil)
-	sprites[BombStateExploding] = NewSprite(GetResource("bomb"), 8, 0, 32, nil, nil)
+	sprites[BombStateExploding] = NewSprite(GetResource(ResourceNameBomb), 8, 0, 32, nil, nil)
 	return &Bomb{
 		pos:     &Position{X: x, Y: y},
 		sprites: sprites,
@@ -82,14 +82,6 @@ func (b *Bomb) Draw(boardImage *ebiten.Image) error {
 	return nil
 }
 
-func GetTileByPosition(pos *Position, g *Game) *Tile {
-	tIndex := pos.X + (pos.Y)*g.board.widthSize
-	if tIndex < 0 || tIndex >= len(g.board.tiles) {
-		return nil
-	}
-	return g.board.tiles[tIndex]
-}
-
 func GetVectorTiles(vet *Position, center Position, radius int, g *Game) []Position {
 
 	postions := []Position{}
@@ -131,7 +123,7 @@ func (b *Bomb) MakeBombEffects(g *Game) bool {
 
 		b.effects = append(b.effects, &BombEffect{
 			pos:    &Position{X: t.X * tileSize, Y: t.Y * tileSize},
-			sprite: NewSprite(GetResource("bomb"), 8, 0, 32, nil, nil),
+			sprite: NewSprite(GetResource(ResourceNameBomb), 8, 0, 32, nil, nil),
 			timer:  time.NewTimer(time.Duration(1) * time.Second),
 		})
 	}

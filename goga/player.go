@@ -43,8 +43,8 @@ type Player struct {
 func NewPlayer() *Player {
 
 	sprites := make(map[PlayerState]*Sprite)
-	sprites[PlayerStateWalk] = NewSprite(GetResource("runner"), 8, 1, 32, nil, nil)
-	sprites[PlayerStateIdle] = NewSprite(GetResource("runner"), 5, 0, 32, nil, nil)
+	sprites[PlayerStateWalk] = NewSprite(GetResource(ResourceNameRunner), 8, 1, 32, nil, nil)
+	sprites[PlayerStateIdle] = NewSprite(GetResource(ResourceNameRunner), 5, 0, 32, nil, nil)
 
 	return &Player{
 		pos:           &Position{X: tileSize * 2, Y: tileSize * 2},
@@ -184,7 +184,9 @@ func (p *Player) Draw(boardImage *ebiten.Image) error {
 		return nil
 	}
 	op := &ebiten.DrawImageOptions{}
+
 	op.GeoM.Translate(float64(p.pos.X), float64(p.pos.Y))
+
 	boardImage.DrawImage(p.sprites[p.state].current, op)
 	return nil
 }

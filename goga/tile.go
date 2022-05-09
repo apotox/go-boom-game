@@ -18,19 +18,19 @@ const (
 func GetSpriteByKind(kind int) *Sprite {
 	switch kind {
 	case 0:
-		return NewSprite(GetResource("tiles"), 1, 0, 32, &DefaultImageCords{
+		return NewSprite(GetResource(ResourceNameTiles), 1, 0, 32, &DefaultImageCords{
 			i: 2,
 			j: 6,
 		}, nil)
 	case 1:
-		return NewSprite(GetResource("tiles"), 1, 0, 32, &DefaultImageCords{
+		return NewSprite(GetResource(ResourceNameTiles), 1, 0, 32, &DefaultImageCords{
 			i: 4,
 			j: 9,
 		}, nil)
 	case 2:
-		return NewSprite(GetResource("tiles"), 1, 0, 32, &DefaultImageCords{0, 0}, nil)
+		return NewSprite(GetResource(ResourceNameTiles), 1, 0, 32, &DefaultImageCords{0, 0}, nil)
 	default:
-		return NewSprite(GetResource("tiles"), 1, 0, 32, &DefaultImageCords{0, 0}, nil)
+		return NewSprite(GetResource(ResourceNameTiles), 1, 0, 32, &DefaultImageCords{0, 0}, nil)
 	}
 }
 
@@ -63,4 +63,12 @@ func (t *Tile) Draw(boardImage *ebiten.Image) error {
 	}
 
 	return nil
+}
+
+func GetTileByPosition(pos *Position, g *Game) *Tile {
+	tIndex := pos.X + (pos.Y)*g.board.widthSize
+	if tIndex < 0 || tIndex >= len(g.board.tiles) {
+		return nil
+	}
+	return g.board.tiles[tIndex]
 }

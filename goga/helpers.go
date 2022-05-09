@@ -2,6 +2,7 @@ package goga
 
 import (
 	"fmt"
+	"math"
 
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -58,4 +59,8 @@ func GetSurroundedTiles(tilePos Position, g *Game) (center, up, left, down, righ
 func GetTilePos(pos *Position) Position {
 
 	return Position{X: (pos.X) / tileSize, Y: (pos.Y) / tileSize}
+}
+
+func DegreesToRadians(degrees float64) float64 {
+	return degrees * (math.Pi / 180)
 }
