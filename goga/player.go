@@ -17,71 +17,101 @@ type Task struct {
 	action   func(g *Game, initData map[string]interface{}) error
 }
 
+type PlayerState string
+
+const (
+	PlayerStateIdle PlayerState = "idle"
+	PlayerStateWalk PlayerState = "walk"
+	PlayerStateDie  PlayerState = "die"
+)
+
 type Player struct {
 	pos           *Position
 	tasks         chan Task
 	power         int
 	life          int
-	movingSprite  *Sprite
-	idleSprite    *Sprite
+	sprites       map[PlayerState]*Sprite
+	state         PlayerState
 	rotation      float64
 	direction     Dir
+	oldDirection  Dir
 	nextDirection Dir
 	nextTile      *Tile
 	speed         int
 }
 
 func NewPlayer() *Player {
+
+	sprites := make(map[PlayerState]*Sprite)
+	sprites[PlayerStateWalk] = NewSprite(GetResource("runner"), 8, 1, 32, nil, nil)
+	sprites[PlayerStateIdle] = NewSprite(GetResource("runner"), 5, 0, 32, nil, nil)
+
 	return &Player{
 		pos:           &Position{X: tileSize * 2, Y: tileSize * 2},
-		tasks:         make(chan Task, 1),
+		tasks:         make(chan Task, 2),
 		power:         1,
 		life:          1,
-		movingSprite:  NewSprite(GetResource("runner"), 8, 1, 32, nil),
-		idleSprite:    NewSprite(GetResource("runner"), 5, 0, 32, nil),
+		sprites:       sprites,
 		speed:         1,
 		direction:     DirDown,
 		nextDirection: DirDown,
+		state:         PlayerStateIdle,
 	}
 }
 
 func (p *Player) CurrentImage() *ebiten.Image {
 
-	return p.movingSprite.current
+	return p.sprites[p.state].current
+}
+
+func (p *Player) GetNextTile(g *Game, direction Dir) *Tile {
+
+	_, up, left, down, right, _ := GetSurroundedTiles(GetTilePos(p.pos), g)
+
+	switch direction {
+	case DirUp:
+		if up != nil && up.Walkable() {
+			return up
+		}
+	case DirDown:
+		if down != nil && down.Walkable() {
+			return down
+		}
+	case DirLeft:
+		if left != nil && left.Walkable() {
+			return left
+		}
+	case DirRight:
+		if right != nil && right.Walkable() {
+			return right
+		}
+	}
+
+	return nil
 }
 
 func (p *Player) Move(g *Game) {
 
-	_, up, left, down, right, _ := GetTiles(p.GetTilePos(), g)
-
 	if p.nextTile == nil {
 
-		switch p.nextDirection {
-		case DirUp:
-			if up != nil && up.Walkable() {
-				p.nextTile = up
-			}
-		case DirDown:
-			if down != nil && down.Walkable() {
-				p.nextTile = down
-			}
-		case DirLeft:
-			if left != nil && left.Walkable() {
-				p.nextTile = left
-			}
-		case DirRight:
-			if right != nil && right.Walkable() {
-				p.nextTile = right
+		if p.nextDirection != p.direction {
+			n := p.GetNextTile(g, p.nextDirection)
+			if n != nil {
+				p.direction = p.nextDirection
 			}
 		}
 
-		if p.nextTile != nil {
-			p.direction = p.nextDirection
+		p.nextTile = p.GetNextTile(g, p.direction)
+
+		// still nil?
+		if p.nextTile == nil {
+			p.state = PlayerStateIdle
 		} else {
-			p.nextDirection = p.direction
+			p.state = PlayerStateWalk
 		}
 
 	} else {
+
 		dx := p.nextTile.pos.X - p.pos.X
 		dy := p.nextTile.pos.Y - p.pos.Y
 
@@ -99,11 +129,6 @@ func (p *Player) Move(g *Game) {
 
 }
 
-func (p *Player) GetTilePos() Position {
-
-	return Position{X: (p.pos.X) / tileSize, Y: (p.pos.Y) / tileSize}
-}
-
 func (p *Player) Update(game *Game) error {
 
 	if dir, ok := game.input.Dir(); ok {
@@ -118,8 +143,14 @@ func (p *Player) Update(game *Game) error {
 
 	p.RunTasks(game)
 
-	p.movingSprite.Animate()
+	p.Animate(game)
 
+	return nil
+}
+
+func (p *Player) Animate(game *Game) error {
+
+	p.sprites[p.state].Animate()
 	return nil
 }
 
@@ -132,7 +163,7 @@ func (p *Player) AddTask(action Action) {
 		action: func(g *Game, initData map[string]interface{}) error {
 			action := initData["action"].(Action)
 			fmt.Printf("executed action: %d\n", action)
-			g.bombs = append(g.bombs, NewBomb(p.pos.X, p.pos.Y))
+			g.AddBomb(p.pos, 3)
 			return nil
 		},
 	}
@@ -145,7 +176,6 @@ func (p *Player) RunTasks(game *Game) error {
 	default:
 		// nothing to do
 	}
-
 	return nil
 }
 
@@ -153,10 +183,8 @@ func (p *Player) Draw(boardImage *ebiten.Image) error {
 	if boardImage == nil {
 		return nil
 	}
-
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(p.pos.X), float64(p.pos.Y))
-	// p.movingSprite.current.Fill(playerColor)
-	boardImage.DrawImage(p.movingSprite.current, op)
+	boardImage.DrawImage(p.sprites[p.state].current, op)
 	return nil
 }

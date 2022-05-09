@@ -1,6 +1,7 @@
 //go:generate file2byteslice -package=images -input=./images/player.png -output=./images/player.go -var=Player_png
 //go:generate file2byteslice -package=images -input=./images/runner.png -output=./images/runner.go -var=Runner_png
 //go:generate file2byteslice -package=images -input=./images/tiles.png -output=./images/tiles.go -var=Tiles_png
+//go:generate file2byteslice -package=images -input=./images/bomb.png -output=./images/bomb.go -var=Bomb_png
 //go:generate gofmt -s -w .
 
 package resources

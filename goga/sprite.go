@@ -11,6 +11,11 @@ type DefaultImageCords struct {
 	j int
 }
 
+type Offsets struct {
+	offsetX int
+	offsetY int
+}
+
 type Sprite struct {
 	source    *ebiten.Image
 	images    []*ebiten.Image
@@ -50,8 +55,11 @@ func (s *Sprite) Reset() error {
 	return nil
 }
 
-func NewSprite(img *ebiten.Image, length int, line int, tileWidth int, defaultImageCord *DefaultImageCords) *Sprite {
+func NewSprite(img *ebiten.Image, length int, line int, tileWidth int, defaultImageCord *DefaultImageCords, offset *Offsets) *Sprite {
 
+	if offset == nil {
+		offset = &Offsets{0, 0}
+	}
 	s := &Sprite{
 		alpha:     0.1,
 		line:      line,
@@ -62,12 +70,12 @@ func NewSprite(img *ebiten.Image, length int, line int, tileWidth int, defaultIm
 	}
 
 	for tileIndex := 0; tileIndex < length; tileIndex++ {
-		i := s.source.SubImage(image.Rect(tileIndex*s.tileWidth, s.line*s.tileWidth, s.tileWidth*(1+tileIndex), (s.line+1)*s.tileWidth)).(*ebiten.Image)
+		i := s.source.SubImage(image.Rect(offset.offsetX+tileIndex*s.tileWidth, offset.offsetY+s.line*s.tileWidth, offset.offsetX+s.tileWidth*(1+tileIndex), offset.offsetY+(s.line+1)*s.tileWidth)).(*ebiten.Image)
 		s.images[tileIndex] = ScaleImage(i)
 	}
 
 	if defaultImageCord != nil {
-		i := img.SubImage(image.Rect(defaultImageCord.i*s.tileWidth, defaultImageCord.j*s.tileWidth, defaultImageCord.i*s.tileWidth+s.tileWidth, (defaultImageCord.j+1)*s.tileWidth)).(*ebiten.Image)
+		i := img.SubImage(image.Rect(offset.offsetX+defaultImageCord.i*s.tileWidth, offset.offsetY+defaultImageCord.j*s.tileWidth, offset.offsetX+defaultImageCord.i*s.tileWidth+s.tileWidth, offset.offsetY+(defaultImageCord.j+1)*s.tileWidth)).(*ebiten.Image)
 		s.SetCurrent(ScaleImage(i))
 	}
 

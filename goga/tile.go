@@ -11,7 +11,8 @@ type Tile struct {
 }
 
 const (
-	tileSize = 12
+	tileSize      = 14
+	TileKindEmpty = 0
 )
 
 func GetSpriteByKind(kind int) *Sprite {
@@ -20,16 +21,16 @@ func GetSpriteByKind(kind int) *Sprite {
 		return NewSprite(GetResource("tiles"), 1, 0, 32, &DefaultImageCords{
 			i: 2,
 			j: 6,
-		})
+		}, nil)
 	case 1:
 		return NewSprite(GetResource("tiles"), 1, 0, 32, &DefaultImageCords{
 			i: 4,
 			j: 9,
-		})
+		}, nil)
 	case 2:
-		return NewSprite(GetResource("tiles"), 1, 0, 32, &DefaultImageCords{0, 0})
+		return NewSprite(GetResource("tiles"), 1, 0, 32, &DefaultImageCords{0, 0}, nil)
 	default:
-		return NewSprite(GetResource("tiles"), 1, 0, 32, &DefaultImageCords{0, 0})
+		return NewSprite(GetResource("tiles"), 1, 0, 32, &DefaultImageCords{0, 0}, nil)
 	}
 }
 

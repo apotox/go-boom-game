@@ -28,6 +28,7 @@ func LoadResources() error {
 	_resources["player"] = getImage(images.Player_png)
 	_resources["runner"] = getImage(images.Runner_png)
 	_resources["tiles"] = getImage(images.Tiles_png)
+	_resources["bomb"] = getImage(images.Bomb_png)
 	return nil
 }
 

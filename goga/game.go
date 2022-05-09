@@ -94,3 +94,18 @@ func (g *Game) AddEnemy(board *Board, pos *Position) {
 	g.enemies = append(g.enemies, enemy)
 
 }
+
+func (g *Game) RemoveBomb(index int) {
+
+	for i, bomb := range g.bombs {
+		if bomb.index == index {
+			g.bombs = append(g.bombs[:i], g.bombs[i+1:]...)
+			break
+		}
+	}
+}
+
+func (g *Game) AddBomb(pos *Position, lifeTime int) {
+	index := len(g.bombs)
+	g.bombs = append(g.bombs, NewBomb(index, pos.X, pos.Y, lifeTime))
+}

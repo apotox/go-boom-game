@@ -27,7 +27,7 @@ func Filter(arr []Task, f func(Task) bool) []interface{} {
 	return r
 }
 
-func GetTiles(tilePos Position, g *Game) (center, up, left, down, right *Tile, err error) {
+func GetSurroundedTiles(tilePos Position, g *Game) (center, up, left, down, right *Tile, err error) {
 
 	center = g.board.tiles[tilePos.Y*g.board.widthSize+tilePos.X]
 
@@ -53,4 +53,9 @@ func GetTiles(tilePos Position, g *Game) (center, up, left, down, right *Tile, e
 	}()
 
 	return
+}
+
+func GetTilePos(pos *Position) Position {
+
+	return Position{X: (pos.X) / tileSize, Y: (pos.Y) / tileSize}
 }
