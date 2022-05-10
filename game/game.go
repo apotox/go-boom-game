@@ -6,7 +6,6 @@ import (
 	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
-	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 type Game struct {
@@ -19,6 +18,7 @@ type Game struct {
 	boardImage     *ebiten.Image
 	input          *Input
 	pickableTicker *time.Ticker
+	gameScreen     GameScreen
 }
 
 // Update proceeds the game state.
@@ -55,42 +55,7 @@ func (g *Game) Update() error {
 // Draw is called every frame (typically 1/60[s] for 60Hz display).
 func (g *Game) Draw(screen *ebiten.Image) {
 
-	ebitenutil.DebugPrint(screen, "Hello, World!")
-
-	if g.boardImage == nil {
-		g.boardImage = ebiten.NewImage(g.board.widthSize*tileSize, g.board.heightSize*tileSize)
-	}
-	g.boardImage.Fill(backgroundColor)
-
-	if g.board != nil {
-		g.board.Draw(g.boardImage)
-	}
-
-	if g.player1 != nil {
-
-		g.player1.Draw(g.boardImage)
-	}
-
-	if len(g.bombs) > 0 {
-		for _, bomb := range g.bombs {
-			bomb.Draw(g.boardImage)
-		}
-	}
-
-	if len(g.pickables) > 0 {
-		for _, pickable := range g.pickables {
-			pickable.Draw(g.boardImage)
-		}
-	}
-
-	select {
-	case <-g.pickableTicker.C:
-		g.AddPickable(PickableEnumPower)
-	default:
-		// nothing
-	}
-
-	screen.DrawImage(g.boardImage, &ebiten.DrawImageOptions{})
+	screens[g.gameScreen](g, screen)
 }
 
 // Layout takes the outside size (e.g., the window size) and returns the (logical) screen size.
@@ -101,14 +66,13 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 
 func NewGame() *Game {
 
-	board := GetLevelBoard(0)
-
 	game := &Game{
-		level:          1,
-		board:          board,
+		level:          0,
 		player1:        NewPlayer(),
 		input:          NewInput(),
 		pickableTicker: time.NewTicker(time.Second * 10),
+		board:          GetLevelBoard(0),
+		gameScreen:     GameScreenStart,
 	}
 
 	return game
