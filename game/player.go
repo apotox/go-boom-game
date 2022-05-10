@@ -1,6 +1,8 @@
 package game
 
 import (
+	"fmt"
+
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -142,7 +144,6 @@ func (p *Player) Update(game *Game) error {
 
 	if action, ok := game.input.Action(); ok {
 		p.AddTask(action)
-		game.AddPickable(PickableEnumPower)
 	}
 
 	p.Move(game)
@@ -150,9 +151,9 @@ func (p *Player) Update(game *Game) error {
 	p.Animate(game)
 
 	//draw particles
-	for _, particle := range p.particles {
-		particle.Update(game)
-	}
+	// for _, particle := range p.particles {
+	// 	particle.Update(game)
+	// }
 
 	return nil
 }
@@ -211,8 +212,13 @@ func (p *Player) Draw(boardImage *ebiten.Image) error {
 	boardImage.DrawImage(p.sprites[p.state].current, op)
 
 	//draw particles
-	for _, particle := range p.particles {
-		particle.Draw(boardImage)
-	}
+	// for _, particle := range p.particles {
+	// 	particle.Draw(boardImage)
+	// }
 	return nil
+}
+
+func (p *Player) Die() {
+	//p.state = PlayerStateDie
+	fmt.Print("player died")
 }

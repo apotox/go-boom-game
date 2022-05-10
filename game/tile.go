@@ -36,7 +36,7 @@ func GetSpriteByKind(kind int) *Sprite {
 			j: 9,
 		}, nil, true)
 	case 2:
-		return NewSprite(GetResource(ResourceNameTiles), 1, 0, 32, &DefaultImageCords{0, 0}, nil, true)
+		return NewSprite(GetResource(ResourceNameWood), 1, 0, 8, &DefaultImageCords{0, 0}, nil, true)
 	default:
 		return NewSprite(GetResource(ResourceNameTiles), 1, 0, 32, &DefaultImageCords{0, 0}, nil, true)
 	}

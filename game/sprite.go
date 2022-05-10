@@ -88,6 +88,8 @@ func NewSprite(img *ebiten.Image, length int, line int, tileWidth int, defaultIm
 		} else {
 			s.SetCurrent(i)
 		}
+	} else {
+		s.SetCurrent(s.images[0])
 	}
 
 	return s

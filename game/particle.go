@@ -1,8 +1,6 @@
 package game
 
 import (
-	"math/rand"
-
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -43,17 +41,7 @@ func (p *Particle) Draw(boardImage *ebiten.Image) error {
 
 	op := &ebiten.DrawImageOptions{}
 
-	randomInt := rand.Intn(tileSize)
-	randomIntY := rand.Intn(tileSize / 4)
-	switch p.playerDirection {
-	case DirRight:
-		op.GeoM.Translate(float64(p.pos.X-randomInt), float64(randomIntY+p.pos.Y+tileSize/2))
-	case DirLeft:
-		op.GeoM.Translate(float64(p.pos.X+tileSize-randomInt), float64(randomIntY+p.pos.Y+tileSize/2))
-
-	default:
-		return nil
-	}
+	op.GeoM.Translate(float64(p.pos.X), float64(p.pos.Y-tileSize/2))
 
 	boardImage.DrawImage(p.sprite.current, op)
 	return nil

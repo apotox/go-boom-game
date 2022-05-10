@@ -38,6 +38,7 @@ func NewBomb(index, x, y, lifeTime int) *Bomb {
 		j: 9,
 	}, nil, true)
 	sprites[BombStateExploding] = NewSprite(GetResource(ResourceNameBomb), 8, 0, 32, nil, nil, true)
+
 	return &Bomb{
 		pos:     &Position{X: x, Y: y},
 		sprites: sprites,
@@ -50,14 +51,15 @@ func NewBomb(index, x, y, lifeTime int) *Bomb {
 }
 
 func (b *Bomb) Update(g *Game) error {
-
 	select {
 	case <-b.timer.C:
 
 		if b.state == BombStateIdle {
 			b.state = BombStateExploding
-			b.MakeBombEffects(g)
+
 			b.timer = time.NewTimer(time.Duration(1) * time.Second)
+
+			b.MakeBombEffects(g)
 		} else {
 			g.RemoveBomb(b.index)
 		}
@@ -68,7 +70,7 @@ func (b *Bomb) Update(g *Game) error {
 	b.sprites[b.state].Animate()
 
 	for _, e := range b.effects {
-		e.sprite.Animate()
+		e.Update(g)
 	}
 
 	return nil
@@ -81,6 +83,7 @@ func (b *Bomb) Draw(boardImage *ebiten.Image) error {
 
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(b.pos.X), float64(b.pos.Y))
+
 	boardImage.DrawImage(b.sprites[b.state].current, op)
 
 	for _, e := range b.effects {
@@ -119,7 +122,8 @@ func (b *Bomb) MakeBombEffects(g *Game) bool {
 		vt := GetVectorTiles(&ed, center, b.radius, g)
 
 		for _, t := range vt {
-			b.effects = append(b.effects, NewBombEffect(&Position{X: t.X * tileSize, Y: t.Y * tileSize}))
+
+			b.effects = append(b.effects, NewBombEffect(t, g.player1.pos))
 		}
 	}
 

@@ -29,6 +29,7 @@ const (
 	ResourceNameRunner ResourceName = "runner"
 	ResourceNameBomb   ResourceName = "bomb"
 	ResourceNameDust   ResourceName = "dust"
+	ResourceNameWood   ResourceName = "wood"
 )
 
 var _resources = map[ResourceName]*ebiten.Image{}
@@ -40,6 +41,7 @@ func LoadResources() error {
 	_resources[ResourceNameTiles] = getImage(images.Tiles_png)
 	_resources[ResourceNameBomb] = getImage(images.Bomb_png)
 	_resources[ResourceNameDust] = getImage(images.Dust_png)
+	_resources[ResourceNameWood] = getImage(images.Wood_png)
 	return nil
 }
 

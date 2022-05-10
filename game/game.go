@@ -3,20 +3,22 @@ package game
 import (
 	"fmt"
 	"math/rand"
+	"time"
 
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
 
 type Game struct {
-	level      int
-	board      *Board
-	player1    *Player
-	bombs      []*Bomb
-	enemies    []*Enemy
-	pickables  []*Pickable
-	boardImage *ebiten.Image
-	input      *Input
+	level          int
+	board          *Board
+	player1        *Player
+	bombs          []*Bomb
+	enemies        []*Enemy
+	pickables      []*Pickable
+	boardImage     *ebiten.Image
+	input          *Input
+	pickableTicker *time.Ticker
 }
 
 // Update proceeds the game state.
@@ -81,6 +83,13 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		}
 	}
 
+	select {
+	case <-g.pickableTicker.C:
+		g.AddPickable(PickableEnumPower)
+	default:
+		// nothing
+	}
+
 	screen.DrawImage(g.boardImage, &ebiten.DrawImageOptions{})
 }
 
@@ -95,10 +104,11 @@ func NewGame() *Game {
 	board := GetLevelBoard(0)
 
 	game := &Game{
-		level:   1,
-		board:   board,
-		player1: NewPlayer(),
-		input:   NewInput(),
+		level:          1,
+		board:          board,
+		player1:        NewPlayer(),
+		input:          NewInput(),
+		pickableTicker: time.NewTicker(time.Second * 10),
 	}
 
 	return game
@@ -119,6 +129,12 @@ func (g *Game) RemoveBomb(index int) {
 			break
 		}
 	}
+
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("Panic: %+v\n", r)
+		}
+	}()
 }
 
 func (g *Game) AddBomb(pos *Position, lifeTime int) {
@@ -131,18 +147,18 @@ func (g *Game) AddPickable(kind PickableEnum) {
 	tIndex := rand.Intn(len(g.board.tiles) - 1)
 	//var t *Tile
 
+	if tIndex < 0 {
+		tIndex = 0 // weird bug
+	}
+
 	for g.board.tiles[tIndex].kind != TileKindEmpty {
 		tIndex = rand.Intn(len(g.board.tiles) - 1)
 		//t = g.board.tiles[tIndex]
 	}
 
 	if g.board.tiles[tIndex] != nil {
-		fmt.Printf("tIndex: %d %v\n", tIndex, g.board.tiles[tIndex].pos)
 		g.pickables = append(g.pickables, NewPickable(kind, g.board.tiles[tIndex].pos))
-
 	}
-
-	// g.pickables = append(g.pickables, NewPickable(kind, t.pos))
 
 	defer func() {
 		if r := recover(); r != nil {
