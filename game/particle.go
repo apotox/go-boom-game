@@ -1,6 +1,10 @@
 package game
 
-import "github.com/hajimehoshi/ebiten/v2"
+import (
+	"math/rand"
+
+	"github.com/hajimehoshi/ebiten/v2"
+)
 
 type ParticleEnum int
 
@@ -10,9 +14,11 @@ const (
 )
 
 type Particle struct {
-	pos    *Position
-	sprite *Sprite
-	name   ParticleEnum
+	pos             *Position
+	sprite          *Sprite
+	name            ParticleEnum
+	playerDirection Dir
+	isPlayerMoving  bool
 }
 
 func NewParticle(name ParticleEnum, pos *Position) *Particle {
@@ -24,17 +30,31 @@ func NewParticle(name ParticleEnum, pos *Position) *Particle {
 }
 
 func (p *Particle) Update(g *Game) error {
+	p.playerDirection = g.player1.direction
+	p.isPlayerMoving = g.player1.nextTile != nil
 	p.sprite.Animate()
 	return nil
 }
 
 func (p *Particle) Draw(boardImage *ebiten.Image) error {
-	if boardImage == nil {
+	if boardImage == nil || !p.isPlayerMoving {
 		return nil
 	}
 
 	op := &ebiten.DrawImageOptions{}
-	op.GeoM.Translate(float64(p.pos.X), float64(p.pos.Y+tileSize/2))
+
+	randomInt := rand.Intn(tileSize)
+	randomIntY := rand.Intn(tileSize / 4)
+	switch p.playerDirection {
+	case DirRight:
+		op.GeoM.Translate(float64(p.pos.X-randomInt), float64(randomIntY+p.pos.Y+tileSize/2))
+	case DirLeft:
+		op.GeoM.Translate(float64(p.pos.X+tileSize-randomInt), float64(randomIntY+p.pos.Y+tileSize/2))
+
+	default:
+		return nil
+	}
+
 	boardImage.DrawImage(p.sprite.current, op)
 	return nil
 }

@@ -200,6 +200,12 @@ func (p *Player) Draw(boardImage *ebiten.Image) error {
 	}
 	op := &ebiten.DrawImageOptions{}
 
+	//flip image
+	if p.direction == DirLeft {
+		op.GeoM.Scale(-1, 1)
+		op.GeoM.Translate(tileSize, 0)
+	}
+
 	op.GeoM.Translate(float64(p.pos.X), float64(p.pos.Y))
 
 	boardImage.DrawImage(p.sprites[p.state].current, op)
