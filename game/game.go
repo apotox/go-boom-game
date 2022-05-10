@@ -145,7 +145,6 @@ func (g *Game) AddBomb(pos *Position, lifeTime int) {
 func (g *Game) AddPickable(kind PickableEnum) {
 
 	tIndex := rand.Intn(len(g.board.tiles) - 1)
-	//var t *Tile
 
 	if tIndex < 0 {
 		tIndex = 0 // weird bug
@@ -153,7 +152,6 @@ func (g *Game) AddPickable(kind PickableEnum) {
 
 	for g.board.tiles[tIndex].kind != TileKindEmpty {
 		tIndex = rand.Intn(len(g.board.tiles) - 1)
-		//t = g.board.tiles[tIndex]
 	}
 
 	if g.board.tiles[tIndex] != nil {
