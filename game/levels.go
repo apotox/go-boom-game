@@ -1,4 +1,4 @@
-package goga
+package game
 
 type Level struct {
 	name  string
@@ -45,9 +45,7 @@ func GetLevelBoard(index int) *Board {
 
 	for y := 0; y < heightSize; y++ {
 		for x := 0; x < widthSize; x++ {
-
 			b.tiles = append(b.tiles, NewTile(x*tileSize, y*tileSize, level.tiles[y][x]))
-
 		}
 	}
 

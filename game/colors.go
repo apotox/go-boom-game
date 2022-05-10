@@ -1,4 +1,4 @@
-package goga
+package game
 
 import (
 	"image/color"

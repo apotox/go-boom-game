@@ -1,6 +1,9 @@
-package goga
+package game
 
 import (
+	"fmt"
+	"math/rand"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/ebitenutil"
 )
@@ -11,6 +14,7 @@ type Game struct {
 	player1    *Player
 	bombs      []*Bomb
 	enemies    []*Enemy
+	pickables  []*Pickable
 	boardImage *ebiten.Image
 	input      *Input
 }
@@ -33,6 +37,12 @@ func (g *Game) Update() error {
 	if len(g.bombs) > 0 {
 		for _, bomb := range g.bombs {
 			bomb.Update(g)
+		}
+	}
+
+	if len(g.pickables) > 0 {
+		for _, pickable := range g.pickables {
+			pickable.Update(g)
 		}
 	}
 
@@ -65,13 +75,19 @@ func (g *Game) Draw(screen *ebiten.Image) {
 		}
 	}
 
+	if len(g.pickables) > 0 {
+		for _, pickable := range g.pickables {
+			pickable.Draw(g.boardImage)
+		}
+	}
+
 	screen.DrawImage(g.boardImage, &ebiten.DrawImageOptions{})
 }
 
 // Layout takes the outside size (e.g., the window size) and returns the (logical) screen size.
 // If you don't have to adjust the screen size with the outside size, just return a fixed size.
 func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeight int) {
-	return 200, 200
+	return 12 * tileSize, 16 * tileSize
 }
 
 func NewGame() *Game {
@@ -108,4 +124,29 @@ func (g *Game) RemoveBomb(index int) {
 func (g *Game) AddBomb(pos *Position, lifeTime int) {
 	index := len(g.bombs)
 	g.bombs = append(g.bombs, NewBomb(index, pos.X, pos.Y, lifeTime))
+}
+
+func (g *Game) AddPickable(kind PickableEnum) {
+
+	tIndex := rand.Intn(len(g.board.tiles) - 1)
+	//var t *Tile
+
+	for g.board.tiles[tIndex].kind != TileKindEmpty {
+		tIndex = rand.Intn(len(g.board.tiles) - 1)
+		//t = g.board.tiles[tIndex]
+	}
+
+	if g.board.tiles[tIndex] != nil {
+		fmt.Printf("tIndex: %d %v\n", tIndex, g.board.tiles[tIndex].pos)
+		g.pickables = append(g.pickables, NewPickable(kind, g.board.tiles[tIndex].pos))
+
+	}
+
+	// g.pickables = append(g.pickables, NewPickable(kind, t.pos))
+
+	defer func() {
+		if r := recover(); r != nil {
+			fmt.Printf("Panic: %+v\n", r)
+		}
+	}()
 }

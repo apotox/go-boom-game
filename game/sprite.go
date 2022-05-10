@@ -1,4 +1,4 @@
-package goga
+package game
 
 import (
 	"image"
@@ -55,7 +55,7 @@ func (s *Sprite) Reset() error {
 	return nil
 }
 
-func NewSprite(img *ebiten.Image, length int, line int, tileWidth int, defaultImageCord *DefaultImageCords, offset *Offsets) *Sprite {
+func NewSprite(img *ebiten.Image, length int, line int, tileWidth int, defaultImageCord *DefaultImageCords, offset *Offsets, scale bool) *Sprite {
 
 	if offset == nil {
 		offset = &Offsets{0, 0}
@@ -71,12 +71,23 @@ func NewSprite(img *ebiten.Image, length int, line int, tileWidth int, defaultIm
 
 	for tileIndex := 0; tileIndex < length; tileIndex++ {
 		i := s.source.SubImage(image.Rect(offset.offsetX+tileIndex*s.tileWidth, offset.offsetY+s.line*s.tileWidth, offset.offsetX+s.tileWidth*(1+tileIndex), offset.offsetY+(s.line+1)*s.tileWidth)).(*ebiten.Image)
-		s.images[tileIndex] = ScaleImage(i)
+		if scale {
+			s.images[tileIndex] = ScaleImage(i)
+		} else {
+			s.images[tileIndex] = i
+		}
+
 	}
 
 	if defaultImageCord != nil {
 		i := img.SubImage(image.Rect(offset.offsetX+defaultImageCord.i*s.tileWidth, offset.offsetY+defaultImageCord.j*s.tileWidth, offset.offsetX+defaultImageCord.i*s.tileWidth+s.tileWidth, offset.offsetY+(defaultImageCord.j+1)*s.tileWidth)).(*ebiten.Image)
 		s.SetCurrent(ScaleImage(i))
+
+		if scale {
+			s.SetCurrent(ScaleImage(i))
+		} else {
+			s.SetCurrent(i)
+		}
 	}
 
 	return s

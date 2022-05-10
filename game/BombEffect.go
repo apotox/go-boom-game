@@ -1,4 +1,4 @@
-package goga
+package game
 
 import (
 	"time"
@@ -22,4 +22,12 @@ func (b *BombEffect) Draw(boardImage *ebiten.Image) error {
 	boardImage.DrawImage(b.sprite.current, op)
 
 	return nil
+}
+
+func NewBombEffect(pos *Position) *BombEffect {
+	return &BombEffect{
+		pos:    pos,
+		sprite: NewSprite(GetResource(ResourceNameBomb), 8, 0, 32, nil, nil, true),
+		// timer:  time.NewTimer(time.Duration(1) * time.Second),
+	}
 }

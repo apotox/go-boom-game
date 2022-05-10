@@ -1,4 +1,4 @@
-package goga
+package game
 
 import (
 	"time"
@@ -12,6 +12,13 @@ const (
 	BombStateIdle      BombState = "idle"
 	BombStateExploding BombState = "exploding"
 )
+
+var explodeDirections = []Position{
+	{X: -1, Y: 0},
+	{X: 0, Y: 1},
+	{X: 1, Y: 0},
+	{X: 0, Y: -1},
+}
 
 type Bomb struct {
 	index   int
@@ -29,8 +36,8 @@ func NewBomb(index, x, y, lifeTime int) *Bomb {
 	sprites[BombStateIdle] = NewSprite(GetResource(ResourceNameTiles), 1, 0, 32, &DefaultImageCords{
 		i: 1,
 		j: 9,
-	}, nil)
-	sprites[BombStateExploding] = NewSprite(GetResource(ResourceNameBomb), 8, 0, 32, nil, nil)
+	}, nil, true)
+	sprites[BombStateExploding] = NewSprite(GetResource(ResourceNameBomb), 8, 0, 32, nil, nil, true)
 	return &Bomb{
 		pos:     &Position{X: x, Y: y},
 		sprites: sprites,
@@ -50,8 +57,9 @@ func (b *Bomb) Update(g *Game) error {
 		if b.state == BombStateIdle {
 			b.state = BombStateExploding
 			b.MakeBombEffects(g)
+			b.timer = time.NewTimer(time.Duration(1) * time.Second)
 		} else {
-			//g.RemoveBomb(b.index)
+			g.RemoveBomb(b.index)
 		}
 
 	default:
@@ -106,26 +114,13 @@ func (b *Bomb) MakeBombEffects(g *Game) bool {
 	}
 
 	center := GetTilePos(b.pos)
-	// 4 vectors
 
-	v1 := GetVectorTiles(&Position{X: -1, Y: 0}, center, b.radius, g)
-	v2 := GetVectorTiles(&Position{X: 0, Y: 1}, center, b.radius, g)
-	v3 := GetVectorTiles(&Position{X: 1, Y: 0}, center, b.radius, g)
-	v4 := GetVectorTiles(&Position{X: 0, Y: -1}, center, b.radius, g)
+	for _, ed := range explodeDirections {
+		vt := GetVectorTiles(&ed, center, b.radius, g)
 
-	vectors := []Position{}
-	vectors = append(vectors, v1...)
-	vectors = append(vectors, v2...)
-	vectors = append(vectors, v3...)
-	vectors = append(vectors, v4...)
-
-	for _, t := range vectors {
-
-		b.effects = append(b.effects, &BombEffect{
-			pos:    &Position{X: t.X * tileSize, Y: t.Y * tileSize},
-			sprite: NewSprite(GetResource(ResourceNameBomb), 8, 0, 32, nil, nil),
-			timer:  time.NewTimer(time.Duration(1) * time.Second),
-		})
+		for _, t := range vt {
+			b.effects = append(b.effects, NewBombEffect(&Position{X: t.X * tileSize, Y: t.Y * tileSize}))
+		}
 	}
 
 	return false

@@ -1,4 +1,4 @@
-package goga
+package game
 
 import (
 	"bytes"
@@ -28,6 +28,7 @@ const (
 	ResourceNameTiles  ResourceName = "tiles"
 	ResourceNameRunner ResourceName = "runner"
 	ResourceNameBomb   ResourceName = "bomb"
+	ResourceNameDust   ResourceName = "dust"
 )
 
 var _resources = map[ResourceName]*ebiten.Image{}
@@ -38,6 +39,7 @@ func LoadResources() error {
 	_resources[ResourceNameRunner] = getImage(images.Runner_png)
 	_resources[ResourceNameTiles] = getImage(images.Tiles_png)
 	_resources[ResourceNameBomb] = getImage(images.Bomb_png)
+	_resources[ResourceNameDust] = getImage(images.Dust_png)
 	return nil
 }
 
