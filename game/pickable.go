@@ -14,14 +14,14 @@ const (
 type Pickable struct {
 	kind   PickableEnum
 	pos    *Position
-	sprite *Sprite
+	sprite ISprite
 }
 
 func NewPickable(kind PickableEnum, pos *Position) *Pickable {
 	return &Pickable{
 		kind:   kind,
 		pos:    pos,
-		sprite: NewSprite(GetResource(ResourceNameRunner), 8, 1, 32, nil, nil, true),
+		sprite: NewAnimatedSprite(GetResource(ResourceNameRunner), 8, 1, 32, nil, true),
 	}
 }
 
@@ -37,7 +37,7 @@ func (p *Pickable) Draw(boardImage *ebiten.Image) error {
 
 	op.GeoM.Translate(float64(p.pos.X), float64(p.pos.Y))
 
-	boardImage.DrawImage(p.sprite.current, op)
+	boardImage.DrawImage(p.sprite.GetCurrent(), op)
 	return nil
 }
 

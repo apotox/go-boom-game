@@ -9,7 +9,7 @@ import (
 type Tile struct {
 	pos      *Position
 	boardPos *Position
-	sprite   *Sprite
+	sprite   ISprite
 	tasks    []Task
 	kind     int
 	oldKind  int
@@ -26,23 +26,30 @@ func GetTileSize() int {
 	return tileSize
 }
 
-func GetSpriteByKind(kind int) *Sprite {
+func GetSpriteByKind(kind int) ISprite {
 	switch kind {
 	case 0:
-		return NewSprite(GetResource(ResourceNameTiles), 1, 0, 32, &DefaultImageCords{
-			i: 2,
-			j: 6,
-		}, nil, true)
+		return NewSingleSprite(GetResource(ResourceNameTiles), &Position{
+			X: 2,
+			Y: 6,
+		}, 32, true)
 	case 1:
-		return NewSprite(GetResource(ResourceNameTiles), 1, 0, 32, &DefaultImageCords{
-			i: 4,
-			j: 9,
-		}, nil, true)
+		return NewSingleSprite(GetResource(ResourceNameTiles), &Position{
+			X: 4,
+			Y: 9,
+		}, 32, true)
 	case 2:
-		return NewSprite(GetResource(ResourceNameWood), 1, 0, 8, &DefaultImageCords{0, 0}, nil, true)
+		return NewSingleSprite(GetResource(ResourceNameTiles), &Position{
+			X: 0,
+			Y: 0,
+		}, 32, true)
 	default:
-		return NewSprite(GetResource(ResourceNameTiles), 1, 0, 32, &DefaultImageCords{0, 0}, nil, true)
+		return NewSingleSprite(GetResource(ResourceNameTiles), &Position{
+			X: 0,
+			Y: 0,
+		}, 32, true)
 	}
+
 }
 
 func NewTile(x, y int, kind int) *Tile {
@@ -74,8 +81,8 @@ func (t *Tile) Draw(boardImage *ebiten.Image) error {
 
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(t.pos.X), float64(t.pos.Y))
-	if t.sprite.current != nil {
-		boardImage.DrawImage(t.sprite.current, op)
+	if t.sprite.GetCurrent() != nil {
+		boardImage.DrawImage(t.sprite.GetCurrent(), op)
 	}
 
 	return nil

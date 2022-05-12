@@ -13,7 +13,7 @@ const (
 
 type Particle struct {
 	pos             *Position
-	sprite          *Sprite
+	sprite          ISprite
 	name            ParticleEnum
 	playerDirection Dir
 	isPlayerMoving  bool
@@ -23,7 +23,7 @@ func NewParticle(name ParticleEnum, pos *Position) *Particle {
 	return &Particle{
 		name:   name,
 		pos:    pos,
-		sprite: NewSprite(GetResource(ResourceNameDust), 3, 0, 12, nil, nil, false),
+		sprite: NewAnimatedSprite(GetResource(ResourceNameDust), 3, 0, 12, nil, false),
 	}
 }
 
@@ -43,6 +43,6 @@ func (p *Particle) Draw(boardImage *ebiten.Image) error {
 
 	op.GeoM.Translate(float64(p.pos.X), float64(p.pos.Y-tileSize/2))
 
-	boardImage.DrawImage(p.sprite.current, op)
+	boardImage.DrawImage(p.sprite.GetCurrent(), op)
 	return nil
 }

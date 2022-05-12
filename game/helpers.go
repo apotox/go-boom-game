@@ -8,9 +8,7 @@ import (
 
 func ScaleImage(img *ebiten.Image) *ebiten.Image {
 	op := &ebiten.DrawImageOptions{}
-
 	op.GeoM.Scale(float64(tileSize)/float64(img.Bounds().Size().X), float64(tileSize)/float64(img.Bounds().Size().Y))
-
 	u := ebiten.NewImage(tileSize, tileSize)
 	u.DrawImage(img, op)
 
@@ -37,12 +35,9 @@ type Entity interface {
 	GetSize() int
 }
 
-func GetEntityTile(g *Game, entity Entity) *Tile {
-
+func GetEntityTile(g *Game, entity Entity) (*Tile, *Position) {
 	pos := entity.GetPosition()
-
 	i := (pos.X + entity.GetSize()/2) / tileSize
 	j := (pos.Y + entity.GetSize()/2) / tileSize
-
-	return g.board.tiles[i+j*g.board.widthSize]
+	return g.board.tiles[i+j*g.board.widthSize], &Position{X: i, Y: j}
 }

@@ -5,6 +5,7 @@ go 1.17
 require (
 	github.com/hajimehoshi/ebiten/v2 v2.3.1
 	github.com/hajimehoshi/file2byteslice v0.0.0-20210813153925-5340248a8f41
+	golang.org/x/image v0.0.0-20220321031419-a8550c1d254a
 )
 
 require (
@@ -12,8 +13,8 @@ require (
 	github.com/gofrs/flock v0.8.1 // indirect
 	github.com/jezek/xgb v1.0.0 // indirect
 	golang.org/x/exp v0.0.0-20190731235908-ec7cb31e5a56 // indirect
-	golang.org/x/image v0.0.0-20220321031419-a8550c1d254a // indirect
 	golang.org/x/mobile v0.0.0-20220325161704-447654d348e3 // indirect
 	golang.org/x/sync v0.0.0-20210220032951-036812b2e83c // indirect
 	golang.org/x/sys v0.0.0-20220408201424-a24fb2fb8a0f // indirect
+	golang.org/x/text v0.3.7 // indirect
 )

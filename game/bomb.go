@@ -23,7 +23,7 @@ var explodeDirections = []Position{
 type Bomb struct {
 	index   int
 	pos     *Position
-	sprites map[BombState]*Sprite
+	sprites map[BombState]ISprite
 	state   BombState
 	timer   *time.Timer
 	effects []*BombEffect
@@ -32,12 +32,12 @@ type Bomb struct {
 
 func NewBomb(index, x, y, lifeTime int) *Bomb {
 
-	sprites := make(map[BombState]*Sprite)
-	sprites[BombStateIdle] = NewSprite(GetResource(ResourceNameTiles), 1, 0, 32, &DefaultImageCords{
-		i: 1,
-		j: 9,
-	}, nil, true)
-	sprites[BombStateExploding] = NewSprite(GetResource(ResourceNameBomb), 8, 0, 32, nil, nil, true)
+	sprites := make(map[BombState]ISprite)
+	sprites[BombStateIdle] = NewSingleSprite(GetResource(ResourceNameTiles), &Position{
+		X: 1,
+		Y: 9,
+	}, 32, true)
+	sprites[BombStateExploding] = NewAnimatedSprite(GetResource(ResourceNameBomb), 8, 0, 32, nil, true)
 
 	return &Bomb{
 		pos:     &Position{X: x, Y: y},
@@ -84,7 +84,7 @@ func (b *Bomb) Draw(boardImage *ebiten.Image) error {
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(b.pos.X), float64(b.pos.Y))
 
-	boardImage.DrawImage(b.sprites[b.state].current, op)
+	boardImage.DrawImage(b.sprites[b.state].GetCurrent(), op)
 
 	for _, e := range b.effects {
 		e.Draw(boardImage)

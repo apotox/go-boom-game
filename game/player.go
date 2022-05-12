@@ -28,7 +28,7 @@ type Player struct {
 	pos           *Position
 	tasks         chan Task
 	power         int
-	sprites       map[PlayerState]*Sprite
+	sprites       map[PlayerState]ISprite
 	particles     []*Particle
 	state         PlayerState
 	rotation      float64
@@ -40,9 +40,9 @@ type Player struct {
 
 func NewPlayer() *Player {
 
-	sprites := make(map[PlayerState]*Sprite)
-	sprites[PlayerStateWalk] = NewSprite(GetResource(ResourceNameRunner), 8, 1, 32, nil, nil, true)
-	sprites[PlayerStateIdle] = NewSprite(GetResource(ResourceNameRunner), 5, 0, 32, nil, nil, true)
+	sprites := make(map[PlayerState]ISprite)
+	sprites[PlayerStateWalk] = NewAnimatedSprite(GetResource(ResourceNameRunner), 8, 1, 32, nil, true)
+	sprites[PlayerStateIdle] = NewAnimatedSprite(GetResource(ResourceNameRunner), 5, 0, 32, nil, true)
 
 	particles := make([]*Particle, 0)
 
@@ -64,7 +64,7 @@ func NewPlayer() *Player {
 
 func (p *Player) CurrentImage() *ebiten.Image {
 
-	return p.sprites[p.state].current
+	return p.sprites[p.state].GetCurrent()
 }
 
 func (p *Player) GetFeatures() Features {
@@ -219,7 +219,7 @@ func (p *Player) Draw(boardImage *ebiten.Image) error {
 
 	op.GeoM.Translate(float64(p.pos.X), float64(p.pos.Y))
 
-	boardImage.DrawImage(p.sprites[p.state].current, op)
+	boardImage.DrawImage(p.sprites[p.state].GetCurrent(), op)
 
 	//draw particles
 	// for _, particle := range p.particles {
@@ -228,7 +228,9 @@ func (p *Player) Draw(boardImage *ebiten.Image) error {
 	return nil
 }
 
-func (p *Player) Die() {
+func (p *Player) Die(g *Game) error {
 	//p.state = PlayerStateDie
 	fmt.Print("player died")
+	g.SetScreen(GameScreenGameOver)
+	return nil
 }

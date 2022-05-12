@@ -7,23 +7,21 @@ import (
 )
 
 type BombEffect struct {
-	pos            Position
-	sprite         *Sprite
-	playerPosition *Position
+	pos    Position
+	sprite ISprite
 }
 
 func (b *BombEffect) Update(g *Game) error {
 
-	if b.sprite == nil || b.playerPosition == nil {
+	if b.sprite == nil {
 		return nil
 	}
 
 	b.sprite.Animate()
+	_, playerTilePosition := GetEntityTile(g, g.player1)
 
-	currentPlayerTile := GetEntityTile(g, g.player1)
-
-	if currentPlayerTile.pos.X == b.pos.X && currentPlayerTile.pos.Y == b.pos.Y {
-		g.player1.Die()
+	if playerTilePosition.X == b.pos.X && playerTilePosition.Y == b.pos.Y {
+		g.player1.Die(g)
 	}
 
 	tile := GetTileByPosition(&b.pos, g)
@@ -47,15 +45,14 @@ func (b *BombEffect) Draw(boardImage *ebiten.Image) error {
 
 	op := &ebiten.DrawImageOptions{}
 	op.GeoM.Translate(float64(b.pos.X*tileSize), float64(b.pos.Y*tileSize))
-	boardImage.DrawImage(b.sprite.current, op)
+	boardImage.DrawImage(b.sprite.GetCurrent(), op)
 
 	return nil
 }
 
 func NewBombEffect(pos Position, playerPosition *Position) *BombEffect {
 	return &BombEffect{
-		pos:            pos,
-		playerPosition: playerPosition,
-		sprite:         NewSprite(GetResource(ResourceNameBomb), 8, 0, 32, nil, nil, true),
+		pos:    pos,
+		sprite: NewAnimatedSprite(GetResource(ResourceNameBomb), 8, 0, 32, nil, true),
 	}
 }

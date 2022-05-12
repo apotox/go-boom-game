@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"time"
 
+	ui "github.com/apotox/goga/ui"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -19,43 +20,24 @@ type Game struct {
 	input          *Input
 	pickableTicker *time.Ticker
 	gameScreen     GameScreen
+	UiComponents   map[GameScreen][]ui.Component
+}
+
+func (g *Game) SetScreen(s GameScreen) {
+	g.gameScreen = s
 }
 
 // Update proceeds the game state.
 // Update is called every tick (1/60 [s] by default).
 func (g *Game) Update() error {
-
-	g.input.Update()
-
-	if g.board != nil {
-		g.board.Update(g)
-	}
-
-	if g.player1 != nil {
-
-		g.player1.Update(g)
-	}
-
-	if len(g.bombs) > 0 {
-		for _, bomb := range g.bombs {
-			bomb.Update(g)
-		}
-	}
-
-	if len(g.pickables) > 0 {
-		for _, pickable := range g.pickables {
-			pickable.Update(g)
-		}
-	}
-
+	screens[g.gameScreen].Update(g)
 	return nil
 }
 
 // Draw draws the game screen.
 // Draw is called every frame (typically 1/60[s] for 60Hz display).
 func (g *Game) Draw(screen *ebiten.Image) {
-
-	screens[g.gameScreen](g, screen)
+	screens[g.gameScreen].Draw(g, screen)
 }
 
 // Layout takes the outside size (e.g., the window size) and returns the (logical) screen size.
@@ -72,7 +54,15 @@ func NewGame() *Game {
 		input:          NewInput(),
 		pickableTicker: time.NewTicker(time.Second * 10),
 		board:          GetLevelBoard(0),
-		gameScreen:     GameScreenStart,
+		gameScreen:     GameScreenPlay,
+		UiComponents:   make(map[GameScreen][]ui.Component),
+	}
+
+	// init screens
+	for _, screen := range screens {
+		if screen.Init != nil {
+			screen.Init(game)
+		}
 	}
 
 	return game

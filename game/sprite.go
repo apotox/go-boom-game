@@ -16,6 +16,13 @@ type Offsets struct {
 	offsetY int
 }
 
+type ISprite interface {
+	Animate() error
+	SetCurrent(*ebiten.Image)
+	GetCurrent() *ebiten.Image
+	IsAnimation() bool
+}
+
 type Sprite struct {
 	source    *ebiten.Image
 	images    []*ebiten.Image
@@ -25,12 +32,13 @@ type Sprite struct {
 	counter   float32
 	alpha     float32
 	tileWidth int
-	scale     bool
+	//single
+	pos *Position
 }
 
 func (s *Sprite) Animate() error {
 
-	if s.length == 1 {
+	if !s.IsAnimation() {
 		return nil
 	}
 	tileIndex := int(s.counter) % s.length
@@ -43,9 +51,16 @@ func (s *Sprite) Animate() error {
 	return nil
 }
 
-func (s *Sprite) SetCurrent(i *ebiten.Image) {
+func (s *Sprite) IsAnimation() bool {
+	return s.length > 1
+}
 
+func (s *Sprite) SetCurrent(i *ebiten.Image) {
 	s.current = i
+}
+
+func (s *Sprite) GetCurrent() *ebiten.Image {
+	return s.current
 }
 
 func (s *Sprite) Reset() error {
@@ -55,7 +70,7 @@ func (s *Sprite) Reset() error {
 	return nil
 }
 
-func NewSprite(img *ebiten.Image, length int, line int, tileWidth int, defaultImageCord *DefaultImageCords, offset *Offsets, scale bool) *Sprite {
+func NewAnimatedSprite(img *ebiten.Image, length int, line int, tileWidth int, offset *Offsets, scale bool) ISprite {
 
 	if offset == nil {
 		offset = &Offsets{0, 0}
@@ -79,18 +94,36 @@ func NewSprite(img *ebiten.Image, length int, line int, tileWidth int, defaultIm
 
 	}
 
-	if defaultImageCord != nil {
-		i := img.SubImage(image.Rect(offset.offsetX+defaultImageCord.i*s.tileWidth, offset.offsetY+defaultImageCord.j*s.tileWidth, offset.offsetX+defaultImageCord.i*s.tileWidth+s.tileWidth, offset.offsetY+(defaultImageCord.j+1)*s.tileWidth)).(*ebiten.Image)
-		s.SetCurrent(ScaleImage(i))
-
-		if scale {
-			s.SetCurrent(ScaleImage(i))
-		} else {
-			s.SetCurrent(i)
-		}
-	} else {
-		s.SetCurrent(s.images[0])
-	}
+	s.SetCurrent(s.images[0])
 
 	return s
+}
+
+func NewSingleSprite(img *ebiten.Image, pos *Position, tileWidth int, scale bool) ISprite {
+
+	rect := image.Rect(
+		pos.X*tileWidth,
+		pos.Y*tileWidth,
+		tileWidth*(1+pos.X),
+		tileWidth*(1+pos.Y),
+	)
+
+	image := img.SubImage(rect).(*ebiten.Image)
+
+	if scale {
+		image = ScaleImage(image)
+	}
+
+	sprite := &Sprite{
+		images: []*ebiten.Image{
+			image,
+		},
+		length:    1,
+		pos:       pos,
+		tileWidth: tileWidth,
+		source:    img,
+		current:   image,
+	}
+
+	return sprite
 }
