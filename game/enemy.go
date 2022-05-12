@@ -44,6 +44,16 @@ func (e *Enemy) Draw(boardImage *ebiten.Image) error {
 	return nil
 }
 
+func (p *Enemy) GetPosition() *Position {
+	return p.pos
+}
+func (p *Enemy) GetName() string {
+	return "enemy"
+}
+func (p *Enemy) GetSize() int {
+	return tileSize
+}
+
 func NewEnemy(pos *Position) *Enemy {
 	return &Enemy{
 		pos:   pos,

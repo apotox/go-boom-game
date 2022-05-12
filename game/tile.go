@@ -12,11 +12,14 @@ type Tile struct {
 	sprite   *Sprite
 	tasks    []Task
 	kind     int
+	oldKind  int
 }
 
 const (
 	tileSize      = 14
 	TileKindEmpty = 0
+	TileKindWall  = 1
+	TileKindWood  = 2
 )
 
 func GetTileSize() int {
@@ -53,6 +56,11 @@ func NewTile(x, y int, kind int) *Tile {
 }
 
 func (t *Tile) Update(g *Game) error {
+	if t.kind != t.oldKind {
+		t.sprite = GetSpriteByKind(t.kind)
+		t.oldKind = t.kind
+	}
+
 	t.sprite.Animate()
 	return nil
 }

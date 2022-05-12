@@ -165,6 +165,16 @@ func (p *Player) Animate(game *Game) error {
 	return nil
 }
 
+func (p *Player) GetPosition() *Position {
+	return p.pos
+}
+func (p *Player) GetName() string {
+	return "player"
+}
+func (p *Player) GetSize() int {
+	return tileSize
+}
+
 func (p *Player) AddTask(action Action) {
 	p.tasks <- Task{
 		taskType: "action",

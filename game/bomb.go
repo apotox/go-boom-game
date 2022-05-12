@@ -101,8 +101,17 @@ func GetVectorTiles(vet *Position, center Position, radius int, g *Game) []Posit
 		tX := center.X + vet.X*i
 		tY := center.Y + vet.Y*i
 		tile := GetTileByPosition(&Position{X: tX, Y: tY}, g)
-		if tile != nil && tile.kind == TileKindEmpty {
-			postions = append(postions, Position{X: tX, Y: tY})
+		if tile != nil {
+
+			if tile.kind == TileKindEmpty {
+				postions = append(postions, Position{X: tX, Y: tY})
+			} else if tile.kind == TileKindWood {
+				postions = append(postions, Position{X: tX, Y: tY})
+				break
+			} else if tile.kind == TileKindWall {
+				break
+			}
+
 		} else {
 			break
 		}

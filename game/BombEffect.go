@@ -20,11 +20,15 @@ func (b *BombEffect) Update(g *Game) error {
 
 	b.sprite.Animate()
 
-	currentPlayerX := b.playerPosition.X / tileSize
-	currentPlayerY := b.playerPosition.Y / tileSize
+	currentPlayerTile := GetEntityTile(g, g.player1)
 
-	if currentPlayerX == b.pos.X && currentPlayerY == b.pos.Y {
+	if currentPlayerTile.pos.X == b.pos.X && currentPlayerTile.pos.Y == b.pos.Y {
 		g.player1.Die()
+	}
+
+	tile := GetTileByPosition(&b.pos, g)
+	if tile != nil && tile.kind == TileKindWood {
+		tile.kind = TileKindEmpty
 	}
 
 	defer func() {

@@ -30,3 +30,19 @@ func Filter(arr []Task, f func(Task) bool) []interface{} {
 func DegreesToRadians(degrees float64) float64 {
 	return degrees * (math.Pi / 180)
 }
+
+type Entity interface {
+	GetPosition() *Position
+	GetName() string
+	GetSize() int
+}
+
+func GetEntityTile(g *Game, entity Entity) *Tile {
+
+	pos := entity.GetPosition()
+
+	i := (pos.X + entity.GetSize()/2) / tileSize
+	j := (pos.Y + entity.GetSize()/2) / tileSize
+
+	return g.board.tiles[i+j*g.board.widthSize]
+}

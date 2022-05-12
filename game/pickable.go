@@ -41,6 +41,16 @@ func (p *Pickable) Draw(boardImage *ebiten.Image) error {
 	return nil
 }
 
+func (p *Pickable) GetPosition() *Position {
+	return p.pos
+}
+func (p *Pickable) GetName() string {
+	return "pickable"
+}
+func (p *Pickable) GetSize() int {
+	return tileSize
+}
+
 func (p *Pickable) Update(g *Game) {
 
 	p.sprite.Animate()
