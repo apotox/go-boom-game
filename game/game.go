@@ -73,7 +73,9 @@ func NewGame() *Game {
 
 func (g *Game) AddEnemy() {
 
-	if len(g.enemies) > 0 {
+	rand.Seed(time.Now().UnixNano())
+
+	if len(g.enemies) > 10 {
 		return
 	}
 	emptyTiles := FilterTiles(g.board.tiles, func(t *Tile) bool {

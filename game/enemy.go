@@ -1,6 +1,8 @@
 package game
 
 import (
+	"time"
+
 	"github.com/apotox/goga/joystick"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -106,10 +108,7 @@ func (e *Enemy) Move(g *Game) {
 
 		t := e.GetNearTile(g)
 
-		if t == nil {
-			e.state = EnemyStateIdle
-		} else {
-			e.state = EnemyStateAttack
+		if t != nil {
 			e.nextTile = t
 		}
 
@@ -150,9 +149,9 @@ func (e *Enemy) Update(g *Game) error {
 
 	e.sprites[e.state].Animate()
 
-	//if e.state == EnemyStateAttack {
-	e.Move(g)
-	//}
+	if e.state == EnemyStateAttack {
+		e.Move(g)
+	}
 
 	return nil
 }
@@ -208,5 +207,17 @@ func NewEnemy(pos *Position) *Enemy {
 		offsetY: 8,
 	}, true)
 
+	timeToAttack := time.NewTimer(time.Duration(3) * time.Second)
+	go func() {
+
+		for {
+			select {
+			case <-timeToAttack.C:
+				e.state = EnemyStateAttack
+				break
+			}
+		}
+
+	}()
 	return e
 }
