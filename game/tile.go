@@ -131,3 +131,8 @@ func GetSurroundedTiles(tilePos Position, g *Game) (center, up, left, down, righ
 
 	return
 }
+
+func GetSurroundedTilesArray(tilePos Position, g *Game) ([]*Tile, error) {
+	_, _, _, _, _, tiles, _ := GetSurroundedTiles(tilePos, g)
+	return tiles, nil
+}

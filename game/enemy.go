@@ -39,6 +39,8 @@ type Enemy struct {
 	family        EnemyFamily
 	direction     joystick.Dir
 	nextDirection joystick.Dir
+	step          float32
+	stepLength    float32
 }
 
 func (e *Enemy) GetFeatures() Features {
@@ -75,7 +77,7 @@ func (e *Enemy) GetNearTile(g *Game) *Tile {
 	enemyPos := GetTileBoardPos(e.pos)
 	playerPos := GetTileBoardPos(g.player1.pos)
 
-	_, _, _, _, _, tiles, _ := GetSurroundedTiles(enemyPos, g)
+	tiles, _ := GetSurroundedTilesArray(enemyPos, g)
 
 	var nearTile *Tile = nil
 
@@ -123,8 +125,11 @@ func (e *Enemy) Move(g *Game) {
 			} else {
 				e.direction = joystick.DirLeft
 			}
-
-			e.pos.X += (dx / joystick.Abs(dx)) * e.GetFeatures().speed
+			sign := (dx / joystick.Abs(dx))
+			if e.step += e.stepLength; e.step > 1 {
+				e.step = 0
+				e.pos.X += sign * e.GetFeatures().speed
+			}
 		} else if joystick.Abs(dy) > 0 {
 
 			if dy > 0 {
@@ -132,8 +137,12 @@ func (e *Enemy) Move(g *Game) {
 			} else {
 				e.direction = joystick.DirDown
 			}
+			sign := (dy / joystick.Abs(dy))
 
-			e.pos.Y += (dy / joystick.Abs(dy)) * e.GetFeatures().speed
+			if e.step += e.stepLength; e.step > 1 {
+				e.step = 0
+				e.pos.Y += sign * e.GetFeatures().speed
+			}
 
 		} else {
 			e.pos.Y = e.nextTile.pos.Y
@@ -186,14 +195,16 @@ func (p *Enemy) GetSize() int {
 
 func NewEnemy(pos *Position) *Enemy {
 	e := &Enemy{
-		pos:       pos,
-		tasks:     []Task{},
-		power:     1,
-		life:      1,
-		state:     EnemyStateIdle,
-		speed:     1,
-		sprites:   make(map[EnemyState]ISprite),
-		direction: joystick.DirDown,
+		pos:        pos,
+		tasks:      []Task{},
+		power:      1,
+		life:       1,
+		state:      EnemyStateIdle,
+		speed:      1,
+		sprites:    make(map[EnemyState]ISprite),
+		direction:  joystick.DirDown,
+		stepLength: 0.4,
+		step:       0,
 	}
 
 	e.sprites[EnemyStateIdle] = NewAnimatedSprite(GetResource(ResourceNameChortIdle), 4, 0, 10, &Offsets{
