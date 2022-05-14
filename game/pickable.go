@@ -19,9 +19,12 @@ type Pickable struct {
 
 func NewPickable(kind PickableEnum, pos *Position) *Pickable {
 	return &Pickable{
-		kind:   kind,
-		pos:    pos,
-		sprite: NewAnimatedSprite(GetResource(ResourceNameRunner), 8, 1, 32, nil, true),
+		kind: kind,
+		pos:  pos,
+		sprite: NewSingleSprite(GetResource(ResourceNameFlaskBlue), &Position{
+			X: 0,
+			Y: 0,
+		}, 32, true),
 	}
 }
 

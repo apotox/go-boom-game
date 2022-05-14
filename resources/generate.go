@@ -1,10 +1,18 @@
-//go:generate file2byteslice -package=images -input=./images/player.png -output=./images/player.go -var=Player_png
-//go:generate file2byteslice -package=images -input=./images/runner.png -output=./images/runner.go -var=Runner_png
-//go:generate file2byteslice -package=images -input=./images/tiles.png -output=./images/tiles.go -var=Tiles_png
-//go:generate file2byteslice -package=images -input=./images/bomb.png -output=./images/bomb.go -var=Bomb_png
-//go:generate file2byteslice -package=images -input=./images/dust.png -output=./images/dust.go -var=Dust_png
-//go:generate file2byteslice -package=images -input=./images/wood.png -output=./images/wood.go -var=Wood_png
-//go:generate file2byteslice -package=images -input=./images/replay.png -output=./images/replay.go -var=Replay_png
+//go:generate file2byteslice -package=images -input=./images/door.png -output=./images/door.go -var=Door_png
+//go:generate file2byteslice -package=images -input=./images/lizard_idle.png -output=./images/lizard_idle.go -var=Lizard_idle_png
+//go:generate file2byteslice -package=images -input=./images/lizard_run.png -output=./images/lizard_run.go -var=Lizard_run_png
+//go:generate file2byteslice -package=images -input=./images/chort_run.png -output=./images/chort_run.go -var=Chort_run_png
+//go:generate file2byteslice -package=images -input=./images/chort_idle.png -output=./images/chort_idle.go -var=Chort_idle_png
+//go:generate file2byteslice -package=images -input=./images/chest_anim.png -output=./images/chest_anim.go -var=Chest_anim_png
+//go:generate file2byteslice -package=images -input=./images/wall_fountain.png -output=./images/wall_fountain.go -var=Wall_fountain_png
+//go:generate file2byteslice -package=images -input=./images/orc_idle.png -output=./images/orc_idle.go -var=Orc_idle_png
+//go:generate file2byteslice -package=images -input=./images/orc_run.png -output=./images/orc_run.go -var=Orc_run_png
+//go:generate file2byteslice -package=images -input=./images/wall.png -output=./images/wall.go -var=Wall_png
+//go:generate file2byteslice -package=images -input=./images/flask_blue.png -output=./images/flask_blue.go -var=Flask_blue_png
+//go:generate file2byteslice -package=images -input=./images/floor.png -output=./images/floor.go -var=Floor_png
+//go:generate file2byteslice -package=images -input=./images/boom_on.png -output=./images/boom_on.go -var=Boom_on_png
+//go:generate file2byteslice -package=images -input=./images/boom_idle.png -output=./images/boom_idle.go -var=Boom_idle_png
+
 //go:generate gofmt -s -w .
 
 package resources

@@ -33,11 +33,8 @@ type Bomb struct {
 func NewBomb(index, x, y, lifeTime int) *Bomb {
 
 	sprites := make(map[BombState]ISprite)
-	sprites[BombStateIdle] = NewSingleSprite(GetResource(ResourceNameTiles), &Position{
-		X: 1,
-		Y: 9,
-	}, 32, true)
-	sprites[BombStateExploding] = NewAnimatedSprite(GetResource(ResourceNameBomb), 8, 0, 32, nil, true)
+	sprites[BombStateIdle] = NewAnimatedSprite(GetResource(ResourceNameBoomIdle), 4, 0, 52, nil, true)
+	sprites[BombStateExploding] = NewAnimatedSprite(GetResource(ResourceNameBoomOn), 6, 0, 52, nil, true)
 
 	return &Bomb{
 		pos:     &Position{X: x, Y: y},

@@ -24,7 +24,7 @@ func NewParticle(name ParticleEnum, pos *Position) *Particle {
 	return &Particle{
 		name:   name,
 		pos:    pos,
-		sprite: NewAnimatedSprite(GetResource(ResourceNameDust), 3, 0, 12, nil, false),
+		sprite: NewAnimatedSprite(GetResource(ResourceNameFlaskBlue), 1, 0, 12, nil, false),
 	}
 }
 

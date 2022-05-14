@@ -24,26 +24,38 @@ func getImage(b []byte) *ebiten.Image {
 type ResourceName string
 
 const (
-	ResourceNamePlayer ResourceName = "player"
-	ResourceNameTiles  ResourceName = "tiles"
-	ResourceNameRunner ResourceName = "runner"
-	ResourceNameBomb   ResourceName = "bomb"
-	ResourceNameDust   ResourceName = "dust"
-	ResourceNameWood   ResourceName = "wood"
-	ResourceNameReplay ResourceName = "replay"
+	ResourceNameChortIdle    ResourceName = "chort_idle"
+	ResourceNameChostRun     ResourceName = "chort_run"
+	ResourceNameDoor         ResourceName = "door"
+	ResourceNameWall         ResourceName = "wall"
+	ResourceNameWallFountain ResourceName = "wall_fountain"
+	ResourceNameLizardIdle   ResourceName = "lizard_idle"
+	ResourceNameLizardRun    ResourceName = "lizard_run"
+	ResourceNameChestAnim    ResourceName = "chest_anim"
+	ResourceNameFlaskBlue    ResourceName = "flask_blue"
+	ResourceNameFloor        ResourceName = "floor"
+	ResourceNameReplay       ResourceName = "replay"
+	ResourceNameBoomIdle     ResourceName = "boom_idle"
+	ResourceNameBoomOn       ResourceName = "boom_on"
 )
 
 var _resources = map[ResourceName]*ebiten.Image{}
 
 func LoadResources() error {
 
-	_resources[ResourceNamePlayer] = getImage(images.Player_png)
-	_resources[ResourceNameRunner] = getImage(images.Runner_png)
-	_resources[ResourceNameTiles] = getImage(images.Tiles_png)
-	_resources[ResourceNameBomb] = getImage(images.Bomb_png)
-	_resources[ResourceNameDust] = getImage(images.Dust_png)
-	_resources[ResourceNameWood] = getImage(images.Wood_png)
+	_resources[ResourceNameChortIdle] = getImage(images.Chort_idle_png)
+	_resources[ResourceNameChostRun] = getImage(images.Chort_run_png)
+	_resources[ResourceNameDoor] = getImage(images.Door_png)
+	_resources[ResourceNameWall] = getImage(images.Wall_png)
+	_resources[ResourceNameWallFountain] = getImage(images.Wall_fountain_png)
+	_resources[ResourceNameLizardIdle] = getImage(images.Lizard_idle_png)
+	_resources[ResourceNameLizardRun] = getImage(images.Lizard_run_png)
+	_resources[ResourceNameChestAnim] = getImage(images.Chest_anim_png)
+	_resources[ResourceNameFlaskBlue] = getImage(images.Flask_blue_png)
+	_resources[ResourceNameFloor] = getImage(images.Floor_png)
 	_resources[ResourceNameReplay] = getImage(images.Replay_png)
+	_resources[ResourceNameBoomIdle] = getImage(images.Boom_idle_png)
+	_resources[ResourceNameBoomOn] = getImage(images.Boom_on_png)
 	return nil
 }
 

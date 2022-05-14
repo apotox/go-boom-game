@@ -42,8 +42,14 @@ type Player struct {
 func NewPlayer() *Player {
 
 	sprites := make(map[PlayerState]ISprite)
-	sprites[PlayerStateWalk] = NewAnimatedSprite(GetResource(ResourceNameRunner), 8, 1, 32, nil, true)
-	sprites[PlayerStateIdle] = NewAnimatedSprite(GetResource(ResourceNameRunner), 5, 0, 32, nil, true)
+	sprites[PlayerStateWalk] = NewAnimatedSprite(GetResource(ResourceNameLizardRun), 4, 0, 32, &Offsets{
+		offsetX: 0,
+		offsetY: 12,
+	}, true)
+	sprites[PlayerStateIdle] = NewAnimatedSprite(GetResource(ResourceNameLizardIdle), 3, 0, 32, &Offsets{
+		offsetX: 0,
+		offsetY: 4,
+	}, true)
 
 	particles := make([]*Particle, 0)
 

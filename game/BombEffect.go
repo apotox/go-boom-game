@@ -53,6 +53,6 @@ func (b *BombEffect) Draw(boardImage *ebiten.Image) error {
 func NewBombEffect(pos Position, playerPosition *Position) *BombEffect {
 	return &BombEffect{
 		pos:    pos,
-		sprite: NewAnimatedSprite(GetResource(ResourceNameBomb), 8, 0, 32, nil, true),
+		sprite: NewAnimatedSprite(GetResource(ResourceNameBoomOn), 6, 0, 52, nil, true),
 	}
 }

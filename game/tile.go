@@ -29,22 +29,22 @@ func GetTileSize() int {
 func GetSpriteByKind(kind int) ISprite {
 	switch kind {
 	case 0:
-		return NewSingleSprite(GetResource(ResourceNameTiles), &Position{
-			X: 2,
-			Y: 6,
+		return NewSingleSprite(GetResource(ResourceNameFloor), &Position{
+			X: 0,
+			Y: 0,
 		}, 32, true)
 	case 1:
-		return NewSingleSprite(GetResource(ResourceNameTiles), &Position{
-			X: 4,
-			Y: 9,
+		return NewSingleSprite(GetResource(ResourceNameWall), &Position{
+			X: 0,
+			Y: 0,
 		}, 32, true)
 	case 2:
-		return NewSingleSprite(GetResource(ResourceNameTiles), &Position{
+		return NewSingleSprite(GetResource(ResourceNameDoor), &Position{
 			X: 0,
 			Y: 0,
 		}, 32, true)
 	default:
-		return NewSingleSprite(GetResource(ResourceNameTiles), &Position{
+		return NewSingleSprite(GetResource(ResourceNameWall), &Position{
 			X: 0,
 			Y: 0,
 		}, 32, true)
