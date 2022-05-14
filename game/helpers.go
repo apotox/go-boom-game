@@ -56,3 +56,12 @@ func FilterTiles(arr []*Tile, f func(*Tile) bool) []*Tile {
 func Distance(a, b Position) float64 {
 	return math.Sqrt(math.Pow(float64(a.X-b.X), 2) + math.Pow(float64(a.Y-b.Y), 2))
 }
+
+func GetDxDy(a, b *Position) (dx int, dy int) {
+
+	dx = a.X - b.X
+	dy = a.Y - b.Y
+
+	return
+
+}

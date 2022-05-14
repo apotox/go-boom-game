@@ -24,6 +24,16 @@ func (b *BombEffect) Update(g *Game) error {
 		g.player1.Die(g)
 	}
 
+	if len(g.enemies) > 0 {
+		for _, enemy := range g.enemies {
+			_, enemyTilePosition := GetEntityTile(g, enemy)
+
+			if enemyTilePosition.X == b.pos.X && enemyTilePosition.Y == b.pos.Y {
+				enemy.Die(g)
+			}
+		}
+	}
+
 	tile := GetTileByBoardPosition(&b.pos, g)
 	if tile != nil && tile.kind == TileKindWood {
 		tile.kind = TileKindEmpty

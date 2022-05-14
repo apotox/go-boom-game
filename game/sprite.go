@@ -1,7 +1,6 @@
 package game
 
 import (
-	"fmt"
 	"image"
 
 	"github.com/hajimehoshi/ebiten/v2"
@@ -84,9 +83,6 @@ func NewAnimatedSprite(img *ebiten.Image, length int, line int, tileWidth int, o
 		tileWidth: img.Bounds().Dx() / length,
 		images:    make([]*ebiten.Image, length),
 	}
-
-	// print s.tileWidth
-	fmt.Printf("%d\n", s.tileWidth)
 
 	for tileIndex := 0; tileIndex < length; tileIndex++ {
 		i := s.source.SubImage(image.Rect(offset.offsetX+tileIndex*s.tileWidth, offset.offsetY+s.line*s.tileWidth, offset.offsetX+s.tileWidth*(1+tileIndex), offset.offsetY+(s.line+1)*s.tileWidth)).(*ebiten.Image)

@@ -19,6 +19,7 @@ type EnemyState string
 const (
 	EnemyStateIdle   EnemyState = "idle"
 	EnemyStateAttack EnemyState = "walk"
+	EnemyStateDead   EnemyState = "dead"
 )
 
 type PrevEntry struct {
@@ -49,8 +50,7 @@ func (e *Enemy) AllowedTile(t *Tile) bool {
 		return false
 	}
 
-	dx := t.pos.X - e.pos.X
-	dy := t.pos.Y - e.pos.Y
+	dx, dy := GetDxDy(t.pos, e.pos)
 
 	if joystick.Abs(dx) > 0 {
 		if dx > 0 {
@@ -114,8 +114,7 @@ func (e *Enemy) Move(g *Game) {
 
 	} else {
 
-		dx := e.nextTile.pos.X - e.pos.X
-		dy := e.nextTile.pos.Y - e.pos.Y
+		dx, dy := GetDxDy(e.nextTile.pos, e.pos)
 
 		if joystick.Abs(dx) > 0 {
 
@@ -207,17 +206,31 @@ func NewEnemy(pos *Position) *Enemy {
 		offsetY: 8,
 	}, true)
 
+	e.sprites[EnemyStateDead] = NewAnimatedSprite(GetResource(ResourceNameChortIdle), 4, 0, 10, &Offsets{
+		offsetX: 0,
+		offsetY: 8,
+	}, true)
+
 	timeToAttack := time.NewTimer(time.Duration(3) * time.Second)
 	go func() {
 
-		for {
-			select {
-			case <-timeToAttack.C:
-				e.state = EnemyStateAttack
-				break
-			}
-		}
+		<-timeToAttack.C
+		e.state = EnemyStateAttack
 
 	}()
 	return e
+}
+
+func (e *Enemy) Die(g *Game) error {
+	if e.state == EnemyStateDead {
+		return nil
+	}
+
+	e.state = EnemyStateDead
+	timer := time.NewTimer(time.Duration(2) * time.Second)
+	go func() {
+		<-timer.C
+		g.RemoveEnemy(e)
+	}()
+	return nil
 }

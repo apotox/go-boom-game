@@ -75,7 +75,7 @@ func (g *Game) AddEnemy() {
 
 	rand.Seed(time.Now().UnixNano())
 
-	if len(g.enemies) > 10 {
+	if len(g.enemies) > 1 {
 		return
 	}
 	emptyTiles := FilterTiles(g.board.tiles, func(t *Tile) bool {
@@ -89,6 +89,14 @@ func (g *Game) AddEnemy() {
 	})
 	g.enemies = append(g.enemies, enemy)
 
+}
+
+func (g *Game) RemoveEnemy(enemy *Enemy) {
+	for i, e := range g.enemies {
+		if e == enemy {
+			g.enemies = append(g.enemies[:i], g.enemies[i+1:]...)
+		}
+	}
 }
 
 func (g *Game) RemoveBomb(index int) {

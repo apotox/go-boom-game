@@ -238,6 +238,6 @@ func (p *Player) Draw(boardImage *ebiten.Image) error {
 func (p *Player) Die(g *Game) error {
 	//p.state = PlayerStateDie
 	fmt.Print("player died")
-	g.SetScreen(GameScreenGameOver)
+	// g.SetScreen(GameScreenGameOver)
 	return nil
 }
