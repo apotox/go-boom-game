@@ -99,20 +99,13 @@ func (g *Game) RemoveEnemy(enemy *Enemy) {
 	}
 }
 
-func (g *Game) RemoveBomb(index int) {
+func (g *Game) RemoveBomb(bomb *Bomb) {
 
-	for i, bomb := range g.bombs {
-		if bomb.index == index {
+	for i, b := range g.bombs {
+		if b == bomb {
 			g.bombs = append(g.bombs[:i], g.bombs[i+1:]...)
-			break
 		}
 	}
-
-	defer func() {
-		if r := recover(); r != nil {
-			fmt.Printf("Panic: %+v\n", r)
-		}
-	}()
 }
 
 func (g *Game) AddBomb(pos *Position, lifeTime int) {

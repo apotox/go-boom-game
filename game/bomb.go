@@ -21,7 +21,6 @@ var explodeDirections = []Position{
 }
 
 type Bomb struct {
-	index   int
 	pos     *Position
 	sprites map[BombState]ISprite
 	state   BombState
@@ -40,7 +39,6 @@ func NewBomb(index, x, y, lifeTime int) *Bomb {
 		pos:     &Position{X: x, Y: y},
 		sprites: sprites,
 		timer:   time.NewTimer(time.Duration(lifeTime) * time.Second),
-		index:   index,
 		state:   BombStateIdle,
 		effects: make([]*BombEffect, 0),
 		radius:  3,
@@ -53,14 +51,11 @@ func (b *Bomb) Update(g *Game) error {
 
 		if b.state == BombStateIdle {
 			b.state = BombStateExploding
-
 			b.timer = time.NewTimer(time.Duration(1) * time.Second)
-
 			b.MakeBombEffects(g)
 		} else {
-			g.RemoveBomb(b.index)
+			g.RemoveBomb(b)
 		}
-
 	default:
 	}
 
