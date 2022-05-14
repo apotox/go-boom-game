@@ -85,6 +85,20 @@ func (d Dir) String() string {
 	panic("not reach")
 }
 
+func (d Dir) Oposite() Dir {
+	switch d {
+	case DirUp:
+		return DirDown
+	case DirRight:
+		return DirLeft
+	case DirDown:
+		return DirUp
+	case DirLeft:
+		return DirRight
+	}
+	panic("not reach")
+}
+
 // Vector returns a [-1, 1] value for each axis.
 func (d Dir) Vector() (x, y int) {
 	switch d {

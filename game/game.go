@@ -20,6 +20,7 @@ type Game struct {
 	boardImage     *ebiten.Image
 	input          *joystick.Input
 	pickableTicker *time.Ticker
+	enemyTicker    *time.Ticker
 	gameScreen     GameScreen
 	UiComponents   map[GameScreen][]ui.Component
 }
@@ -54,6 +55,7 @@ func NewGame() *Game {
 		player1:        NewPlayer(),
 		input:          joystick.NewInput(),
 		pickableTicker: time.NewTicker(time.Second * 10),
+		enemyTicker:    time.NewTicker(time.Second * 3),
 		board:          GetLevelBoard(0),
 		gameScreen:     GameScreenPlay,
 		UiComponents:   make(map[GameScreen][]ui.Component),
@@ -69,9 +71,20 @@ func NewGame() *Game {
 	return game
 }
 
-func (g *Game) AddEnemy(board *Board, pos *Position) {
+func (g *Game) AddEnemy() {
 
-	enemy := NewEnemy(pos)
+	if len(g.enemies) > 0 {
+		return
+	}
+	emptyTiles := FilterTiles(g.board.tiles, func(t *Tile) bool {
+		return t.kind == TileKindEmpty
+	})
+
+	tIndex := rand.Intn(len(emptyTiles) - 1)
+	enemy := NewEnemy(&Position{
+		X: emptyTiles[tIndex].pos.X,
+		Y: emptyTiles[tIndex].pos.Y,
+	})
 	g.enemies = append(g.enemies, enemy)
 
 }

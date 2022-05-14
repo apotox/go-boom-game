@@ -50,9 +50,22 @@ var screens = map[GameScreen]ScreenOptions{
 				}
 			}
 
+			if len(g.enemies) > 0 {
+				for _, enemy := range g.enemies {
+					enemy.Draw(g.boardImage)
+				}
+			}
+
 			select {
 			case <-g.pickableTicker.C:
 				g.AddPickable(PickableEnumPower)
+			default:
+				// nothing
+			}
+
+			select {
+			case <-g.enemyTicker.C:
+				g.AddEnemy()
 			default:
 				// nothing
 			}
@@ -82,6 +95,12 @@ var screens = map[GameScreen]ScreenOptions{
 			if len(g.pickables) > 0 {
 				for _, pickable := range g.pickables {
 					pickable.Update(g)
+				}
+			}
+
+			if len(g.enemies) > 0 {
+				for _, enemy := range g.enemies {
+					enemy.Update(g)
 				}
 			}
 		},

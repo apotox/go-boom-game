@@ -24,7 +24,7 @@ func (b *BombEffect) Update(g *Game) error {
 		g.player1.Die(g)
 	}
 
-	tile := GetTileByPosition(&b.pos, g)
+	tile := GetTileByBoardPosition(&b.pos, g)
 	if tile != nil && tile.kind == TileKindWood {
 		tile.kind = TileKindEmpty
 	}

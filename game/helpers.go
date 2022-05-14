@@ -41,3 +41,18 @@ func GetEntityTile(g *Game, entity Entity) (*Tile, *Position) {
 	j := (pos.Y + entity.GetSize()/2) / tileSize
 	return g.board.tiles[i+j*g.board.widthSize], &Position{X: i, Y: j}
 }
+
+func FilterTiles(arr []*Tile, f func(*Tile) bool) []*Tile {
+	var r = []*Tile{}
+
+	for _, v := range arr {
+		if f(v) {
+			r = append(r, v)
+		}
+	}
+	return r
+}
+
+func Distance(a, b Position) float64 {
+	return math.Sqrt(math.Pow(float64(a.X-b.X), 2) + math.Pow(float64(a.Y-b.Y), 2))
+}

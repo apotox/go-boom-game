@@ -84,7 +84,7 @@ func (p *Player) UpgradePlayer() error {
 }
 
 func (p *Player) GetNextTile(g *Game, direction joystick.Dir) *Tile {
-	_, up, left, down, right, _ := GetSurroundedTiles(GetTilePos(p.pos), g)
+	_, up, left, down, right, _, _ := GetSurroundedTiles(GetTileBoardPos(p.pos), g)
 
 	switch direction {
 	case joystick.DirUp:

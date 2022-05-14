@@ -88,7 +88,7 @@ func (t *Tile) Draw(boardImage *ebiten.Image) error {
 	return nil
 }
 
-func GetTileByPosition(pos *Position, g *Game) *Tile {
+func GetTileByBoardPosition(pos *Position, g *Game) *Tile {
 	tIndex := pos.X + (pos.Y)*g.board.widthSize
 	if tIndex < 0 || tIndex >= len(g.board.tiles) {
 		return nil
@@ -96,27 +96,30 @@ func GetTileByPosition(pos *Position, g *Game) *Tile {
 	return g.board.tiles[tIndex]
 }
 
-func GetTilePos(pos *Position) Position {
+func GetTileBoardPos(pos *Position) Position {
 
 	return Position{X: (pos.X + tileSize/2) / tileSize, Y: (pos.Y + tileSize/2) / tileSize}
 }
 
-func GetSurroundedTiles(tilePos Position, g *Game) (center, up, left, down, right *Tile, err error) {
-
+func GetSurroundedTiles(tilePos Position, g *Game) (center, up, left, down, right *Tile, tiles []*Tile, err error) {
+	tiles = make([]*Tile, 0)
 	center = g.board.tiles[tilePos.Y*g.board.widthSize+tilePos.X]
 
 	if tilePos.Y > 0 {
 		up = g.board.tiles[(tilePos.Y-1)*g.board.widthSize+tilePos.X]
-
+		tiles = append(tiles, up)
 	}
 	if tilePos.X > 0 {
 		left = g.board.tiles[tilePos.Y*g.board.widthSize+tilePos.X-1]
+		tiles = append(tiles, left)
 	}
 	if tilePos.Y < g.board.heightSize-1 {
 		down = g.board.tiles[(tilePos.Y+1)*g.board.widthSize+tilePos.X]
+		tiles = append(tiles, down)
 	}
 	if tilePos.X < g.board.widthSize-1 {
 		right = g.board.tiles[tilePos.Y*g.board.widthSize+tilePos.X+1]
+		tiles = append(tiles, right)
 	}
 
 	defer func() {

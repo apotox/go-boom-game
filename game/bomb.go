@@ -97,7 +97,7 @@ func GetVectorTiles(vet *Position, center Position, radius int, g *Game) []Posit
 	for i := 0; i <= radius; i++ {
 		tX := center.X + vet.X*i
 		tY := center.Y + vet.Y*i
-		tile := GetTileByPosition(&Position{X: tX, Y: tY}, g)
+		tile := GetTileByBoardPosition(&Position{X: tX, Y: tY}, g)
 		if tile != nil {
 
 			if tile.kind == TileKindEmpty {
@@ -122,7 +122,7 @@ func (b *Bomb) MakeBombEffects(g *Game) bool {
 		return false
 	}
 
-	center := GetTilePos(b.pos)
+	center := GetTileBoardPos(b.pos)
 
 	for _, ed := range explodeDirections {
 		vt := GetVectorTiles(&ed, center, b.radius, g)
