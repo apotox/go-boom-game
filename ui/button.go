@@ -3,6 +3,7 @@ package ui
 import (
 	"log"
 
+	"github.com/apotox/goga/joystick"
 	fonts "github.com/apotox/goga/resources/fonts"
 	"github.com/hajimehoshi/ebiten/v2"
 	"golang.org/x/image/font"
@@ -11,7 +12,7 @@ import (
 
 type Component interface {
 	Draw(*ebiten.Image)
-	Update()
+	Update(*joystick.Input)
 }
 
 type Button struct {
@@ -27,7 +28,7 @@ func (b *Button) Click() {
 	b.Action()
 }
 
-func (b *Button) Update() {
+func (b *Button) Update(input *joystick.Input) {
 	// up and down animation
 
 }
@@ -58,16 +59,10 @@ func NewButton(x, y, width int, action func(), text string, image *ebiten.Image)
 	}
 
 	b.Action = func() {
-		b.onPress()
 		action()
 	}
 
 	return b
-}
-
-func (b *Button) onPress() {
-	b.clicked = true
-
 }
 
 func (b *Button) Draw(screen *ebiten.Image) {

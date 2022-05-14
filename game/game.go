@@ -5,6 +5,7 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/apotox/goga/joystick"
 	ui "github.com/apotox/goga/ui"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -17,7 +18,7 @@ type Game struct {
 	enemies        []*Enemy
 	pickables      []*Pickable
 	boardImage     *ebiten.Image
-	input          *Input
+	input          *joystick.Input
 	pickableTicker *time.Ticker
 	gameScreen     GameScreen
 	UiComponents   map[GameScreen][]ui.Component
@@ -51,7 +52,7 @@ func NewGame() *Game {
 	game := &Game{
 		level:          0,
 		player1:        NewPlayer(),
-		input:          NewInput(),
+		input:          joystick.NewInput(),
 		pickableTicker: time.NewTicker(time.Second * 10),
 		board:          GetLevelBoard(0),
 		gameScreen:     GameScreenPlay,

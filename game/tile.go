@@ -98,7 +98,7 @@ func GetTileByPosition(pos *Position, g *Game) *Tile {
 
 func GetTilePos(pos *Position) Position {
 
-	return Position{X: (pos.X) / tileSize, Y: (pos.Y) / tileSize}
+	return Position{X: (pos.X + tileSize/2) / tileSize, Y: (pos.Y + tileSize/2) / tileSize}
 }
 
 func GetSurroundedTiles(tilePos Position, g *Game) (center, up, left, down, right *Tile, err error) {

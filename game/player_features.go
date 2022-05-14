@@ -14,7 +14,7 @@ var allFeatures = AllFeatures{
 		power:    1,
 		speed:    1,
 		life:     1,
-		maxItems: 1,
+		maxItems: 10,
 	},
 	2: Features{
 		power:    2,

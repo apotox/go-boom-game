@@ -1,4 +1,4 @@
-package game
+package joystick
 
 import (
 	"github.com/hajimehoshi/ebiten/v2"
@@ -51,6 +51,14 @@ const (
 	dropBomb Action = iota
 	fireBomb
 	hidePlayer
+)
+
+type tapState int
+
+const (
+	tapStateNone tapState = iota
+	tapStatePressing
+	tapStateSettled
 )
 
 type touchState int
@@ -114,7 +122,7 @@ func NewInput() *Input {
 	return &Input{}
 }
 
-func abs(x int) int {
+func Abs(x int) int {
 	if x < 0 {
 		return -x
 	}
@@ -122,10 +130,10 @@ func abs(x int) int {
 }
 
 func vecToDir(dx, dy int) (Dir, bool) {
-	if abs(dx) < 4 && abs(dy) < 4 {
+	if Abs(dx) < 4 && Abs(dy) < 4 {
 		return 0, false
 	}
-	if abs(dx) < abs(dy) {
+	if Abs(dx) < Abs(dy) {
 		if dy < 0 {
 			return DirUp, true
 		}
@@ -243,4 +251,15 @@ func (i *Input) Action() (Action, bool) {
 	}
 
 	return 0, false
+}
+
+func (i *Input) Tap(x0, y0, x1, y1 int) bool {
+	// if inpututil.IsKeyJustPressed(ebiten.KeyD) {
+	// 	return dropBomb, true
+	// }
+	// if inpututil.IsKeyJustPressed(ebiten.KeyF) {
+	// 	return fireBomb, true
+	// }
+
+	return false
 }

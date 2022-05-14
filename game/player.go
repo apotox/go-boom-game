@@ -3,6 +3,7 @@ package game
 import (
 	"fmt"
 
+	"github.com/apotox/goga/joystick"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -32,9 +33,9 @@ type Player struct {
 	particles     []*Particle
 	state         PlayerState
 	rotation      float64
-	direction     Dir
-	oldDirection  Dir
-	nextDirection Dir
+	direction     joystick.Dir
+	oldDirection  joystick.Dir
+	nextDirection joystick.Dir
 	nextTile      *Tile
 }
 
@@ -51,8 +52,8 @@ func NewPlayer() *Player {
 		tasks:         make(chan Task, 2),
 		power:         1,
 		sprites:       sprites,
-		direction:     DirDown,
-		nextDirection: DirDown,
+		direction:     joystick.DirDown,
+		nextDirection: joystick.DirDown,
 		state:         PlayerStateIdle,
 		particles:     particles,
 	}
@@ -76,23 +77,23 @@ func (p *Player) UpgradePlayer() error {
 	return nil
 }
 
-func (p *Player) GetNextTile(g *Game, direction Dir) *Tile {
+func (p *Player) GetNextTile(g *Game, direction joystick.Dir) *Tile {
 	_, up, left, down, right, _ := GetSurroundedTiles(GetTilePos(p.pos), g)
 
 	switch direction {
-	case DirUp:
+	case joystick.DirUp:
 		if up != nil && up.Walkable() {
 			return up
 		}
-	case DirDown:
+	case joystick.DirDown:
 		if down != nil && down.Walkable() {
 			return down
 		}
-	case DirLeft:
+	case joystick.DirLeft:
 		if left != nil && left.Walkable() {
 			return left
 		}
-	case DirRight:
+	case joystick.DirRight:
 		if right != nil && right.Walkable() {
 			return right
 		}
@@ -122,10 +123,10 @@ func (p *Player) Move(g *Game) {
 		dx := p.nextTile.pos.X - p.pos.X
 		dy := p.nextTile.pos.Y - p.pos.Y
 
-		if abs(dx) > 0 {
-			p.pos.X += (dx / abs(dx)) * p.GetFeatures().speed
-		} else if abs(dy) > 0 {
-			p.pos.Y += (dy / abs(dy)) * p.GetFeatures().speed
+		if joystick.Abs(dx) > 0 {
+			p.pos.X += (dx / joystick.Abs(dx)) * p.GetFeatures().speed
+		} else if joystick.Abs(dy) > 0 {
+			p.pos.Y += (dy / joystick.Abs(dy)) * p.GetFeatures().speed
 		} else {
 			p.pos.Y = p.nextTile.pos.Y
 			p.pos.X = p.nextTile.pos.X
@@ -175,7 +176,7 @@ func (p *Player) GetSize() int {
 	return tileSize
 }
 
-func (p *Player) AddTask(action Action) {
+func (p *Player) AddTask(action joystick.Action) {
 	p.tasks <- Task{
 		taskType: "action",
 		initData: map[string]interface{}{
@@ -212,7 +213,7 @@ func (p *Player) Draw(boardImage *ebiten.Image) error {
 	op := &ebiten.DrawImageOptions{}
 
 	//flip image
-	if p.direction == DirLeft {
+	if p.direction == joystick.DirLeft {
 		op.GeoM.Scale(-1, 1)
 		op.GeoM.Translate(tileSize, 0)
 	}

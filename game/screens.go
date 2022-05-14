@@ -97,7 +97,7 @@ var screens = map[GameScreen]ScreenOptions{
 		},
 		Update: func(g *Game) {
 			for _, c := range g.UiComponents[GameScreenGameOver] {
-				c.Update()
+				c.Update(g.input)
 			}
 		},
 		Init: func(g *Game) {

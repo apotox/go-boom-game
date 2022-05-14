@@ -1,6 +1,7 @@
 package game
 
 import (
+	"github.com/apotox/goga/joystick"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -15,7 +16,7 @@ type Particle struct {
 	pos             *Position
 	sprite          ISprite
 	name            ParticleEnum
-	playerDirection Dir
+	playerDirection joystick.Dir
 	isPlayerMoving  bool
 }
 
