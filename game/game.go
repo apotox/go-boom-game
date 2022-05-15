@@ -10,6 +10,12 @@ import (
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
+var (
+	Zoom         = 2
+	ScreenWidth  = 12 * GetTileSize()
+	ScreenHeight = 16 * GetTileSize()
+)
+
 type Game struct {
 	level          int
 	board          *Board
@@ -59,7 +65,7 @@ func NewGame() *Game {
 		pickableTicker: time.NewTicker(time.Second * 10),
 		enemyTicker:    time.NewTicker(time.Second * 3),
 		board:          GetLevelBoard(level),
-		gameScreen:     GameScreenPlay,
+		gameScreen:     GameScreenGameOver,
 		UiComponents:   make(map[GameScreen][]ui.Component),
 	}
 

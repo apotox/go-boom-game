@@ -158,8 +158,8 @@ func (p *Player) Update(game *Game) error {
 		p.nextDirection = dir
 	}
 
-	if action, ok := game.input.Action(); ok {
-		p.AddTask(action)
+	if ok := game.input.Tap(); ok {
+		p.AddTask(joystick.DropBomb)
 	}
 
 	p.Move(game)

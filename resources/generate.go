@@ -12,6 +12,7 @@
 //go:generate file2byteslice -package=images -input=./images/floor.png -output=./images/floor.go -var=Floor_png
 //go:generate file2byteslice -package=images -input=./images/boom_on.png -output=./images/boom_on.go -var=Boom_on_png
 //go:generate file2byteslice -package=images -input=./images/boom_idle.png -output=./images/boom_idle.go -var=Boom_idle_png
+//go:generate file2byteslice -package=fonts -input=./fonts/PixelAEBold.ttf -output=./fonts/PixelAEBold.go -var=PixelAEBold_ttf
 
 //go:generate gofmt -s -w .
 

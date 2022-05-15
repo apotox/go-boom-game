@@ -1,6 +1,8 @@
 package joystick
 
 import (
+	"fmt"
+
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/inpututil"
 )
@@ -48,9 +50,8 @@ const (
 type Action int
 
 const (
-	dropBomb Action = iota
-	fireBomb
-	hidePlayer
+	DropBomb Action = iota
+	FireBomb
 )
 
 type tapState int
@@ -129,6 +130,7 @@ type Input struct {
 	touchLastPosX int
 	touchLastPosY int
 	touchDir      Dir
+	tap           bool
 }
 
 // NewInput generates a new Input object.
@@ -145,6 +147,7 @@ func Abs(x int) int {
 
 func vecToDir(dx, dy int) (Dir, bool) {
 	if Abs(dx) < 4 && Abs(dy) < 4 {
+		// tap
 		return 0, false
 	}
 	if Abs(dx) < Abs(dy) {
@@ -163,6 +166,7 @@ func vecToDir(dx, dy int) (Dir, bool) {
 func (i *Input) Update() {
 	switch i.mouseState {
 	case mouseStateNone:
+
 		if ebiten.IsMouseButtonPressed(ebiten.MouseButtonLeft) {
 			x, y := ebiten.CursorPosition()
 			i.mouseInitPosX = x
@@ -177,16 +181,21 @@ func (i *Input) Update() {
 			d, ok := vecToDir(dx, dy)
 			if !ok {
 				i.mouseState = mouseStateNone
+				fmt.Print("tap")
+				i.tap = true
 				break
 			}
 			i.mouseDir = d
 			i.mouseState = mouseStateSettled
+			i.tap = false
 		}
 	case mouseStateSettled:
 		i.mouseState = mouseStateNone
+		i.tap = false
 	}
 
 	i.touches = ebiten.AppendTouchIDs(i.touches[:0])
+
 	switch i.touchState {
 	case touchStateNone:
 		if len(i.touches) == 1 {
@@ -218,6 +227,7 @@ func (i *Input) Update() {
 			d, ok := vecToDir(dx, dy)
 			if !ok {
 				i.touchState = touchStateNone
+				i.tap = true
 				break
 			}
 			i.touchDir = d
@@ -225,6 +235,7 @@ func (i *Input) Update() {
 		}
 	case touchStateSettled:
 		i.touchState = touchStateNone
+		i.tap = false
 	case touchStateInvalid:
 		if len(i.touches) == 0 {
 			i.touchState = touchStateNone
@@ -258,22 +269,16 @@ func (i *Input) Dir() (Dir, bool) {
 
 func (i *Input) Action() (Action, bool) {
 	if inpututil.IsKeyJustPressed(ebiten.KeyD) {
-		return dropBomb, true
+		return DropBomb, true
 	}
-	if inpututil.IsKeyJustPressed(ebiten.KeyF) {
-		return fireBomb, true
-	}
-
 	return 0, false
 }
 
-func (i *Input) Tap(x0, y0, x1, y1 int) bool {
-	// if inpututil.IsKeyJustPressed(ebiten.KeyD) {
-	// 	return dropBomb, true
-	// }
-	// if inpututil.IsKeyJustPressed(ebiten.KeyF) {
-	// 	return fireBomb, true
-	// }
+func (i *Input) Tap() bool {
 
+	if i.tap {
+		i.tap = false
+		return true
+	}
 	return false
 }

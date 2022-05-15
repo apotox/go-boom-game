@@ -1,8 +1,12 @@
 package game
 
 import (
+	"image/color"
+
+	"github.com/apotox/goga/mycolors"
 	ui "github.com/apotox/goga/ui"
 	"github.com/hajimehoshi/ebiten/v2"
+	"github.com/hajimehoshi/ebiten/v2/text"
 )
 
 type GameScreen int
@@ -27,7 +31,7 @@ var screens = map[GameScreen]ScreenOptions{
 			if g.boardImage == nil {
 				g.boardImage = ebiten.NewImage(g.board.widthSize*tileSize, g.board.heightSize*tileSize)
 			}
-			g.boardImage.Fill(backgroundColor)
+			g.boardImage.Fill(mycolors.BackgroundColor)
 
 			if g.board != nil {
 				g.board.Draw(g.boardImage)
@@ -107,11 +111,14 @@ var screens = map[GameScreen]ScreenOptions{
 	},
 	GameScreenGameOver: {
 		Draw: func(g *Game, screen *ebiten.Image) error {
-			screen.Fill(backgroundColor)
+			screen.Fill(mycolors.BackgroundColor)
 
 			for _, c := range g.UiComponents[GameScreenGameOver] {
 				c.Draw(screen)
 			}
+
+			text.Draw(screen, "GOGA GAME", GetFont("default"), ScreenWidth/2-36, ScreenHeight-4, color.White)
+
 			return nil
 		},
 		Update: func(g *Game) {
@@ -120,11 +127,12 @@ var screens = map[GameScreen]ScreenOptions{
 			}
 		},
 		Init: func(g *Game) {
-			btn := ui.NewButton(50, 50, 100, func() {
-				g.SetScreen(GameScreenPlay)
-			}, "Play", GetResource(ResourceNameReplay))
 
-			g.UiComponents[GameScreenGameOver] = append(g.UiComponents[GameScreenGameOver], btn)
+			btnPlay := ui.NewButton(ScreenWidth/2, ScreenHeight/2, 40, "Play", GetFont("default"), GetResource(ResourceNameReplay), func() {
+				g.SetScreen(GameScreenPlay)
+			})
+
+			g.UiComponents[GameScreenGameOver] = append(g.UiComponents[GameScreenGameOver], btnPlay)
 		},
 	},
 }

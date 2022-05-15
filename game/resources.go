@@ -5,9 +5,13 @@ import (
 	"fmt"
 	"image"
 	_ "image/png"
+	"log"
 
+	fonts "github.com/apotox/goga/resources/fonts"
 	"github.com/apotox/goga/resources/images"
 	"github.com/hajimehoshi/ebiten/v2"
+	"golang.org/x/image/font"
+	"golang.org/x/image/font/opentype"
 )
 
 func getImage(b []byte) *ebiten.Image {
@@ -40,6 +44,7 @@ const (
 )
 
 var _resources = map[ResourceName]*ebiten.Image{}
+var _fonts = map[string]font.Face{}
 
 func LoadResources() error {
 
@@ -56,7 +61,34 @@ func LoadResources() error {
 	_resources[ResourceNameReplay] = getImage(images.Replay_png)
 	_resources[ResourceNameBoomIdle] = getImage(images.Boom_idle_png)
 	_resources[ResourceNameBoomOn] = getImage(images.Boom_on_png)
+
+	tt, err := opentype.Parse(fonts.PixelAEBold_ttf)
+	if err != nil {
+		log.Fatal(err)
+	}
+
+	const dpi = 62
+	PixelAEBold, err := opentype.NewFace(tt, &opentype.FaceOptions{
+		Size:    14,
+		DPI:     dpi,
+		Hinting: font.HintingFull,
+	})
+
+	_fonts["default"] = PixelAEBold
 	return nil
+}
+
+func GetFont(name string) font.Face {
+
+	if len(_resources) == 0 {
+		LoadResources()
+	}
+
+	if _, ok := _fonts[name]; ok {
+		return _fonts[name]
+	}
+
+	panic("resource not found")
 }
 
 func GetResource(name ResourceName) *ebiten.Image {
