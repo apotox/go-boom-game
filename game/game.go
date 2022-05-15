@@ -91,7 +91,7 @@ func (g *Game) AddEnemy() {
 		return
 	}
 	emptyTiles := FilterTiles(g.board.tiles, func(t *Tile) bool {
-		return t.kind == TileKindEmpty
+		return t.Walkable()
 	})
 
 	tIndex := rand.Intn(len(emptyTiles) - 1)

@@ -75,7 +75,7 @@ func (t *Tile) Update(g *Game) error {
 
 func (t *Tile) Walkable() bool {
 
-	return t.kind == 0 && !t.reserved
+	return t.kind == TileKindEmpty && !t.reserved
 }
 
 func (t *Tile) Draw(boardImage *ebiten.Image) error {

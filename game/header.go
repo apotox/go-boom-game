@@ -1,10 +1,11 @@
 package game
 
 import (
+	"fmt"
 	"image/color"
-	"strconv"
 	"time"
 
+	"github.com/apotox/goga/mycolors"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
 )
@@ -42,7 +43,7 @@ func (h *Header) Draw(image *ebiten.Image) {
 	if image == nil {
 		return
 	}
-
-	text.Draw(image, "Life: "+strconv.Itoa(h.lives), GetFont("default-12"), tileSize, tileSize, color.White)
+	image.Fill(mycolors.PrimaryColor)
+	text.Draw(image, fmt.Sprintf("LIFE: %d  LEVEL: %d", h.lives, h.level), GetFont("default-12"), tileSize, tileSize, color.White)
 
 }
