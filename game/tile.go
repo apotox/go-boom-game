@@ -13,6 +13,7 @@ type Tile struct {
 	tasks    []Task
 	kind     int
 	oldKind  int
+	reserved bool
 }
 
 const (
@@ -74,7 +75,7 @@ func (t *Tile) Update(g *Game) error {
 
 func (t *Tile) Walkable() bool {
 
-	return t.kind == 0
+	return t.kind == 0 && !t.reserved
 }
 
 func (t *Tile) Draw(boardImage *ebiten.Image) error {

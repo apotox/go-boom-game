@@ -29,6 +29,8 @@ type Game struct {
 	enemyTicker    *time.Ticker
 	gameScreen     GameScreen
 	UiComponents   map[GameScreen][]ui.Component
+
+	reservedTiles []*Tile
 }
 
 func (g *Game) SetScreen(s GameScreen) {
@@ -108,6 +110,9 @@ func (g *Game) RemoveEnemy(enemy *Enemy) {
 }
 
 func (g *Game) RemoveBomb(bomb *Bomb) {
+	h := GetTileBoardPos(bomb.pos)
+	p := GetTileByBoardPosition(&h, g)
+	p.reserved = false
 
 	for i, b := range g.bombs {
 		if b == bomb {
@@ -117,8 +122,7 @@ func (g *Game) RemoveBomb(bomb *Bomb) {
 }
 
 func (g *Game) AddBomb(pos *Position, lifeTime int) {
-	index := len(g.bombs)
-	g.bombs = append(g.bombs, NewBomb(index, pos.X, pos.Y, lifeTime))
+	g.bombs = append(g.bombs, NewBomb(g, pos.X, pos.Y, lifeTime))
 }
 
 func (g *Game) AddPickable(kind PickableEnum) {

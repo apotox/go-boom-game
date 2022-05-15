@@ -29,13 +29,13 @@ type Bomb struct {
 	radius  int
 }
 
-func NewBomb(index, x, y, lifeTime int) *Bomb {
+func NewBomb(g *Game, x, y, lifeTime int) *Bomb {
 
 	sprites := make(map[BombState]ISprite)
 	sprites[BombStateIdle] = NewAnimatedSprite(GetResource(ResourceNameBoomIdle), 4, 0, 52, nil, true)
 	sprites[BombStateExploding] = NewAnimatedSprite(GetResource(ResourceNameBoomOn), 6, 0, 52, nil, true)
 
-	return &Bomb{
+	b := &Bomb{
 		pos:     &Position{X: x, Y: y},
 		sprites: sprites,
 		timer:   time.NewTimer(time.Duration(lifeTime) * time.Second),
@@ -43,6 +43,11 @@ func NewBomb(index, x, y, lifeTime int) *Bomb {
 		effects: make([]*BombEffect, 0),
 		radius:  3,
 	}
+	h := GetTileBoardPos(b.pos)
+	p := GetTileByBoardPosition(&h, g)
+	p.reserved = true
+
+	return b
 }
 
 func (b *Bomb) Update(g *Game) error {
