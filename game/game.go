@@ -117,6 +117,9 @@ func (g *Game) AddBomb(pos *Position, lifeTime int) {
 
 func (g *Game) AddPickable(kind PickableEnum) {
 
+	if len(g.pickables) > 0 {
+		return
+	}
 	tIndex := rand.Intn(len(g.board.tiles) - 1)
 
 	if tIndex < 0 {

@@ -44,10 +44,10 @@ func GetSpriteByKind(kind int) ISprite {
 			Y: 0,
 		}, 32, true)
 	default:
-		return NewSingleSprite(GetResource(ResourceNameWall), &Position{
-			X: 0,
-			Y: 0,
-		}, 32, true)
+		return NewAnimatedSprite(GetResource(ResourceNameWallFountain), 3, 0, 16, &Offsets{
+			offsetX: 0,
+			offsetY: 8,
+		}, true)
 	}
 
 }
