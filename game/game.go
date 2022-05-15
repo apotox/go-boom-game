@@ -50,13 +50,15 @@ func (g *Game) Layout(outsideWidth, outsideHeight int) (screenWidth, screenHeigh
 
 func NewGame() *Game {
 
+	level := 0
+
 	game := &Game{
-		level:          0,
+		level:          level,
 		player1:        NewPlayer(),
 		input:          joystick.NewInput(),
 		pickableTicker: time.NewTicker(time.Second * 10),
 		enemyTicker:    time.NewTicker(time.Second * 3),
-		board:          GetLevelBoard(0),
+		board:          GetLevelBoard(level),
 		gameScreen:     GameScreenPlay,
 		UiComponents:   make(map[GameScreen][]ui.Component),
 	}

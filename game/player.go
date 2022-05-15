@@ -29,6 +29,7 @@ type Player struct {
 	pos           *Position
 	tasks         chan Task
 	power         int
+	dieds         int
 	sprites       map[PlayerState]ISprite
 	particles     []*Particle
 	state         PlayerState
@@ -47,6 +48,10 @@ func NewPlayer() *Player {
 		offsetY: 12,
 	}, true)
 	sprites[PlayerStateIdle] = NewAnimatedSprite(GetResource(ResourceNameLizardIdle), 3, 0, 32, &Offsets{
+		offsetX: 0,
+		offsetY: 4,
+	}, true)
+	sprites[PlayerStateDie] = NewAnimatedSprite(GetResource(ResourceNameLizardIdle), 3, 0, 32, &Offsets{
 		offsetX: 0,
 		offsetY: 4,
 	}, true)
@@ -126,8 +131,7 @@ func (p *Player) Move(g *Game) {
 
 	} else {
 
-		dx := p.nextTile.pos.X - p.pos.X
-		dy := p.nextTile.pos.Y - p.pos.Y
+		dx, dy, _ := GetDxDyDir(p.nextTile.pos, p.pos)
 
 		if joystick.Abs(dx) > 0 {
 			p.pos.X += (dx / joystick.Abs(dx)) * p.GetFeatures().speed
@@ -144,6 +148,11 @@ func (p *Player) Move(g *Game) {
 }
 
 func (p *Player) Update(game *Game) error {
+	p.Animate(game)
+
+	if p.state == PlayerStateDie {
+		return nil
+	}
 
 	if dir, ok := game.input.Dir(); ok {
 		p.nextDirection = dir
@@ -155,12 +164,6 @@ func (p *Player) Update(game *Game) error {
 
 	p.Move(game)
 	p.RunTasks(game)
-	p.Animate(game)
-
-	//draw particles
-	// for _, particle := range p.particles {
-	// 	particle.Update(game)
-	// }
 
 	return nil
 }
@@ -189,7 +192,6 @@ func (p *Player) AddTask(action joystick.Action) {
 			"action": action,
 		},
 		action: func(g *Game, initData map[string]interface{}) error {
-			// action := initData["action"].(Action)
 
 			if len(g.bombs) < p.GetFeatures().maxItems {
 				g.AddBomb(p.pos, 3)
@@ -228,16 +230,49 @@ func (p *Player) Draw(boardImage *ebiten.Image) error {
 
 	boardImage.DrawImage(p.sprites[p.state].GetCurrent(), op)
 
-	//draw particles
-	// for _, particle := range p.particles {
-	// 	particle.Draw(boardImage)
-	// }
 	return nil
 }
 
 func (p *Player) Die(g *Game) error {
-	//p.state = PlayerStateDie
+	if p.state == PlayerStateDie {
+		return nil
+	}
 	fmt.Print("player died")
-	// g.SetScreen(GameScreenGameOver)
+	p.state = PlayerStateDie
+
+	if p.dieds > p.GetFeatures().life {
+		//g.GameOver()
+	} else {
+		p.dieds++
+		SetTimeout(3000, func() {
+			p.pos.X = tileSize * 1
+			p.pos.Y = tileSize * 3
+			p.state = PlayerStateIdle
+		})
+	}
 	return nil
+}
+
+type Features struct {
+	power    int
+	speed    int
+	life     int
+	maxItems int
+}
+
+type AllPlayerFeatures = map[int]Features
+
+var allFeatures = AllPlayerFeatures{
+	1: Features{
+		power:    1,
+		speed:    1,
+		life:     4,
+		maxItems: 2,
+	},
+	2: Features{
+		power:    1,
+		speed:    1,
+		life:     4,
+		maxItems: 3,
+	},
 }

@@ -2,7 +2,9 @@ package game
 
 import (
 	"math"
+	"time"
 
+	"github.com/apotox/goga/joystick"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 
@@ -57,11 +59,33 @@ func Distance(a, b Position) float64 {
 	return math.Sqrt(math.Pow(float64(a.X-b.X), 2) + math.Pow(float64(a.Y-b.Y), 2))
 }
 
-func GetDxDy(a, b *Position) (dx int, dy int) {
+func GetDxDyDir(a, b *Position) (dx int, dy int, dir joystick.Dir) {
 
 	dx = a.X - b.X
 	dy = a.Y - b.Y
 
+	if joystick.Abs(dx) > 0 {
+		if dx > 0 {
+			dir = joystick.DirRight
+		} else {
+			dir = joystick.DirLeft
+		}
+	} else if joystick.Abs(dy) > 0 {
+
+		if dy > 0 {
+			dir = joystick.DirUp
+		} else {
+			dir = joystick.DirDown
+		}
+	}
+
 	return
 
+}
+
+func SetTimeout(t int, f func()) {
+	go func() {
+		time.Sleep(time.Duration(t) * time.Millisecond)
+		f()
+	}()
 }

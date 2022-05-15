@@ -1,8 +1,6 @@
 package game
 
 import (
-	"time"
-
 	"github.com/apotox/goga/joystick"
 	"github.com/hajimehoshi/ebiten/v2"
 )
@@ -34,7 +32,6 @@ type Enemy struct {
 	state         EnemyState
 	nextTile      *Tile
 	prevDir       joystick.Dir
-	speed         int
 	sprites       map[EnemyState]ISprite
 	family        EnemyFamily
 	direction     joystick.Dir
@@ -52,22 +49,9 @@ func (e *Enemy) AllowedTile(t *Tile) bool {
 		return false
 	}
 
-	dx, dy := GetDxDy(t.pos, e.pos)
+	_, _, dir := GetDxDyDir(t.pos, e.pos)
 
-	if joystick.Abs(dx) > 0 {
-		if dx > 0 {
-			e.nextDirection = joystick.DirRight
-		} else {
-			e.nextDirection = joystick.DirLeft
-		}
-	} else if joystick.Abs(dy) > 0 {
-
-		if dy > 0 {
-			e.nextDirection = joystick.DirUp
-		} else {
-			e.nextDirection = joystick.DirDown
-		}
-	}
+	e.nextDirection = dir
 
 	return e.nextDirection.Oposite() != e.direction
 }
@@ -116,39 +100,24 @@ func (e *Enemy) Move(g *Game) {
 
 	} else {
 
-		dx, dy := GetDxDy(e.nextTile.pos, e.pos)
+		if e.step += e.stepLength; e.step > 1 {
+			e.step = 0
+		} else {
+			return
+		}
+
+		dx, dy, dir := GetDxDyDir(e.nextTile.pos, e.pos)
 
 		if joystick.Abs(dx) > 0 {
-
-			if dx > 0 {
-				e.direction = joystick.DirRight
-			} else {
-				e.direction = joystick.DirLeft
-			}
-			sign := (dx / joystick.Abs(dx))
-			if e.step += e.stepLength; e.step > 1 {
-				e.step = 0
-				e.pos.X += sign * e.GetFeatures().speed
-			}
+			e.direction = dir
+			e.pos.X += (dx / joystick.Abs(dx)) * e.GetFeatures().speed
 		} else if joystick.Abs(dy) > 0 {
-
-			if dy > 0 {
-				e.direction = joystick.DirUp
-			} else {
-				e.direction = joystick.DirDown
-			}
-			sign := (dy / joystick.Abs(dy))
-
-			if e.step += e.stepLength; e.step > 1 {
-				e.step = 0
-				e.pos.Y += sign * e.GetFeatures().speed
-			}
-
+			e.direction = dir
+			e.pos.Y += (dy / joystick.Abs(dy)) * e.GetFeatures().speed
 		} else {
 			e.pos.Y = e.nextTile.pos.Y
 			e.pos.X = e.nextTile.pos.X
 			e.nextTile = nil
-
 		}
 	}
 }
@@ -200,7 +169,6 @@ func NewEnemy(pos *Position) *Enemy {
 		power:      1,
 		life:       1,
 		state:      EnemyStateIdle,
-		speed:      1,
 		sprites:    make(map[EnemyState]ISprite),
 		direction:  joystick.DirDown,
 		stepLength: 0.4,
@@ -222,13 +190,9 @@ func NewEnemy(pos *Position) *Enemy {
 		offsetY: 8,
 	}, true)
 
-	timeToAttack := time.NewTimer(time.Duration(3) * time.Second)
-	go func() {
-
-		<-timeToAttack.C
+	SetTimeout(3000, func() {
 		e.state = EnemyStateAttack
-
-	}()
+	})
 	return e
 }
 
@@ -238,10 +202,8 @@ func (e *Enemy) Die(g *Game) error {
 	}
 
 	e.state = EnemyStateDead
-	timer := time.NewTimer(time.Duration(2) * time.Second)
-	go func() {
-		<-timer.C
+	SetTimeout(2000, func() {
 		g.RemoveEnemy(e)
-	}()
+	})
 	return nil
 }
