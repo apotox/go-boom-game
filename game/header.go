@@ -28,12 +28,22 @@ func NewHeader() *Header {
 		score:         0,
 		level:         0,
 		lives:         0,
-		remainingTime: 180,
+		remainingTime: 110,
 		countDown:     time.NewTicker(1 * time.Second),
 	}
 }
 
 func (h *Header) Update(g *Game) {
+
+	select {
+	case <-h.countDown.C:
+		h.remainingTime--
+		if h.remainingTime == 0 {
+			g.SetScreen(GameScreenGameOver)
+		}
+	default:
+		// nothing
+	}
 
 	h.level = g.level
 	h.lives = g.player1.GetFeatures().life - g.player1.dieds
@@ -44,6 +54,13 @@ func (h *Header) Draw(image *ebiten.Image) {
 		return
 	}
 	image.Fill(mycolors.PrimaryColor)
-	text.Draw(image, fmt.Sprintf("LIFE: %d  LEVEL: %d", h.lives, h.level), GetFont("default-12"), tileSize, tileSize, color.White)
+	minutes := (h.remainingTime / 60)
+	zero := ""
+
+	seconds := (h.remainingTime % 60)
+	if seconds < 10 {
+		zero = "0"
+	}
+	text.Draw(image, fmt.Sprintf("LIFE: %d  LEVEL: %d TIME: %d:%s%d", h.lives, h.level, minutes, zero, seconds), GetFont("default-12"), tileSize, tileSize, color.White)
 
 }
