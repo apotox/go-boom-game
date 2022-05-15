@@ -74,7 +74,13 @@ var screens = map[GameScreen]ScreenOptions{
 				// nothing
 			}
 
-			screen.DrawImage(g.boardImage, &ebiten.DrawImageOptions{})
+			do := &ebiten.DrawImageOptions{}
+
+			do.GeoM.Translate(0, float64(HeaderHeight))
+
+			g.header.Draw(screen)
+
+			screen.DrawImage(g.boardImage, do)
 
 			return nil
 		},
@@ -107,6 +113,8 @@ var screens = map[GameScreen]ScreenOptions{
 					enemy.Update(g)
 				}
 			}
+
+			g.header.Update(g)
 		},
 	},
 	GameScreenGameOver: {

@@ -12,7 +12,7 @@ func main() {
 	g := game.NewGame()
 
 	// Specify the window size as you like. Here, a doubled size is specified.
-	ebiten.SetWindowSize(game.ScreenWidth*game.Zoom, game.ScreenHeight*game.Zoom)
+	ebiten.SetWindowSize(game.ScreenWidth*game.Zoom, (game.HeaderHeight+game.ScreenHeight)*game.Zoom)
 	ebiten.SetWindowTitle("boom")
 	// Call ebiten.RunGame to start your game loop.
 	if err := ebiten.RunGame(g); err != nil {

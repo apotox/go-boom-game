@@ -68,13 +68,22 @@ func LoadResources() error {
 	}
 
 	const dpi = 62
-	PixelAEBold, err := opentype.NewFace(tt, &opentype.FaceOptions{
+	PixelAEBold14, err := opentype.NewFace(tt, &opentype.FaceOptions{
 		Size:    14,
 		DPI:     dpi,
 		Hinting: font.HintingFull,
 	})
 
-	_fonts["default"] = PixelAEBold
+	_fonts["default"] = PixelAEBold14
+
+	PixelAEBold12, err := opentype.NewFace(tt, &opentype.FaceOptions{
+		Size:    12,
+		DPI:     dpi,
+		Hinting: font.HintingFull,
+	})
+
+	_fonts["default-12"] = PixelAEBold12
+
 	return nil
 }
 
