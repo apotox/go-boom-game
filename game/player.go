@@ -31,7 +31,6 @@ type Player struct {
 	power         int
 	dieds         int
 	sprites       map[PlayerState]ISprite
-	particles     []*Particle
 	state         PlayerState
 	rotation      float64
 	direction     joystick.Dir
@@ -56,8 +55,6 @@ func NewPlayer() *Player {
 		offsetY: 4,
 	}, true)
 
-	particles := make([]*Particle, 0)
-
 	p := &Player{
 		pos:           &Position{X: tileSize * 2, Y: tileSize * 2},
 		tasks:         make(chan Task, 2),
@@ -66,10 +63,7 @@ func NewPlayer() *Player {
 		direction:     joystick.DirDown,
 		nextDirection: joystick.DirDown,
 		state:         PlayerStateIdle,
-		particles:     particles,
 	}
-
-	p.particles = append(particles, NewParticle(ParticleDust, p.pos))
 
 	return p
 }
