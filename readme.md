@@ -9,4 +9,6 @@ make build
 ./bin/game 
 ```
 
-it still need more dev! :) enjoy
+You can use the mouse to move to any direction by swiping 👆 over the game screen or by using the keyboard arrow keys, and you can drop a booomb 💣 with a left click!
+
+it still need more dev! :) enjoy 
