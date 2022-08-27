@@ -5,8 +5,8 @@ import (
 	"math/rand"
 	"time"
 
-	"github.com/apotox/goga/joystick"
-	ui "github.com/apotox/goga/ui"
+	"github.com/apotox/go-boom-game/joystick"
+	ui "github.com/apotox/go-boom-game/ui"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 

@@ -1,4 +1,4 @@
-module github.com/apotox/goga
+module github.com/apotox/go-boom-game
 
 go 1.17
 

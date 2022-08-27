@@ -3,7 +3,7 @@ package main
 import (
 	"log"
 
-	"github.com/apotox/goga/game"
+	"github.com/apotox/go-boom-game/game"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 

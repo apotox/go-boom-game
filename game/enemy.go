@@ -1,7 +1,7 @@
 package game
 
 import (
-	"github.com/apotox/goga/joystick"
+	"github.com/apotox/go-boom-game/joystick"
 	"github.com/hajimehoshi/ebiten/v2"
 )
 

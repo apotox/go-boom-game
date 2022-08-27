@@ -5,7 +5,7 @@ import (
 	"image/color"
 	"time"
 
-	"github.com/apotox/goga/mycolors"
+	"github.com/apotox/go-boom-game/mycolors"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
 )

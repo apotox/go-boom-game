@@ -3,8 +3,8 @@ package game
 import (
 	"image/color"
 
-	"github.com/apotox/goga/mycolors"
-	ui "github.com/apotox/goga/ui"
+	"github.com/apotox/go-boom-game/mycolors"
+	ui "github.com/apotox/go-boom-game/ui"
 	"github.com/hajimehoshi/ebiten/v2"
 	"github.com/hajimehoshi/ebiten/v2/text"
 )
@@ -125,7 +125,7 @@ var screens = map[GameScreen]ScreenOptions{
 				c.Draw(screen)
 			}
 
-			text.Draw(screen, "GOGA GAME", GetFont("default"), ScreenWidth/2-36, ScreenHeight-4, color.White)
+			text.Draw(screen, "go-boom-game GAME", GetFont("default"), ScreenWidth/2-36, ScreenHeight-4, color.White)
 
 			return nil
 		},

@@ -7,8 +7,8 @@ import (
 	_ "image/png"
 	"log"
 
-	fonts "github.com/apotox/goga/resources/fonts"
-	"github.com/apotox/goga/resources/images"
+	fonts "github.com/apotox/go-boom-game/resources/fonts"
+	"github.com/apotox/go-boom-game/resources/images"
 	"github.com/hajimehoshi/ebiten/v2"
 	"golang.org/x/image/font"
 	"golang.org/x/image/font/opentype"
