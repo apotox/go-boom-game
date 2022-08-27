@@ -8,3 +8,5 @@ make build
 # to run the game
 ./bin/game 
 ```
+
+it still need more dev! :) enjoy
